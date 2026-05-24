@@ -422,7 +422,8 @@ export default function RecuperarSenhaScreen(props: any): React.ReactElement {
                         placeholderTextColor={cores.textoSecundario}
                         value={documento}
                         onChangeText={alterarDocumento}
-                        keyboardType="default"
+                        keyboardType="numeric"
+                        secureTextEntry={true}
                         maxLength={14}
                     />
                 ) : (
@@ -440,7 +441,8 @@ export default function RecuperarSenhaScreen(props: any): React.ReactElement {
                             placeholderTextColor={cores.textoSecundario}
                             value={documento}
                             onChangeText={alterarDocumento}
-                            keyboardType="default"
+                            keyboardType="numeric"
+                            secureTextEntry={true}
                             maxLength={8}
                         />
 

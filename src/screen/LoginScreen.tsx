@@ -302,7 +302,8 @@ export default function LoginScreen(props: any): React.ReactElement {
             placeholderTextColor={cores.textoSecundario}
             value={documento}
             onChangeText={alterarDocumento}
-            keyboardType="default"
+            keyboardType="numeric"
+            secureTextEntry={true}
             maxLength={14}
           />
         ) : (
@@ -320,7 +321,8 @@ export default function LoginScreen(props: any): React.ReactElement {
               placeholderTextColor={cores.textoSecundario}
               value={documento}
               onChangeText={alterarDocumento}
-              keyboardType="default"
+              keyboardType="numeric"
+              secureTextEntry={true}
               maxLength={8}
               showSoftInputOnFocus={true}
             />

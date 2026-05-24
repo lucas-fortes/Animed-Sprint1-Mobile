@@ -302,8 +302,9 @@ export default function LoginScreen(props: any): React.ReactElement {
             placeholderTextColor={cores.textoSecundario}
             value={documento}
             onChangeText={alterarDocumento}
-            keyboardType="default"
-maxLength={14}
+            keyboardType="numeric"
+            secureTextEntry={true}
+            maxLength={14}
           />
         ) : (
           <View style={styles.linhaCrmv}>
@@ -320,7 +321,8 @@ maxLength={14}
               placeholderTextColor={cores.textoSecundario}
               value={documento}
               onChangeText={alterarDocumento}
-              keyboardType="default"
+              keyboardType="numeric"
+              secureTextEntry={true}
               maxLength={5}
 
             />
