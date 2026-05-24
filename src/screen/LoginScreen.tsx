@@ -24,33 +24,35 @@ export default function LoginScreen(props: any): React.ReactElement {
   const [ufCrmv, setUfCrmv] = useState<string>('SP');
   const [senha, setSenha] = useState<string>('');
   const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
+  const [modalTipoVisivel, setModalTipoVisivel] = useState<boolean>(false);
   const [modalEstadosVisivel, setModalEstadosVisivel] = useState<boolean>(false);
-  const [modalTemaVisivel, setModalTemaVisivel] = useState<boolean>(false);
 
   const cores = temaEscuro
     ? {
         fundo: '#07111F',
-        fundoSecundario: '#111820',
+        card: '#111820',
+        input: '#171A22',
         borda: '#23415A',
         texto: '#FFFFFF',
         textoSecundario: '#8A96A8',
         destaque: '#008B7A',
         destaqueBorda: '#00C2A8',
         link: '#00C2FF',
+        modalFundo: '#0E1726',
         sobreposicao: 'rgba(0, 0, 0, 0.60)',
-        cardModal: '#0E1726',
       }
     : {
         fundo: '#F2F6FA',
-        fundoSecundario: '#FFFFFF',
+        card: '#FFFFFF',
+        input: '#FFFFFF',
         borda: '#B8C6D6',
         texto: '#102033',
         textoSecundario: '#6B7A8C',
         destaque: '#008B7A',
         destaqueBorda: '#00A693',
         link: '#0077CC',
+        modalFundo: '#FFFFFF',
         sobreposicao: 'rgba(0, 0, 0, 0.35)',
-        cardModal: '#FFFFFF',
       };
 
   function formatarCpf(valor: string): string {
@@ -93,13 +95,10 @@ export default function LoginScreen(props: any): React.ReactElement {
     }
   }
 
-  function alterarTipoAcesso(tipo: string): void {
+  function selecionarTipoAcesso(tipo: string): void {
     setTipoAcesso(tipo);
     setDocumento('');
-  }
-
-  function alterarTema(valor: boolean): void {
-    setTemaEscuro(valor);
+    setModalTipoVisivel(false);
   }
 
   function selecionarEstado(uf: string): void {
@@ -134,9 +133,7 @@ export default function LoginScreen(props: any): React.ReactElement {
   }
 
   function entrar(): void {
-    const loginValido = validarLogin();
-
-    if (loginValido === false) {
+    if (validarLogin() === false) {
       return;
     }
 
@@ -149,10 +146,11 @@ export default function LoginScreen(props: any): React.ReactElement {
   }
 
   function abrirCadastro(): void {
-    Alert.alert(
-      'Cadastro',
-      'A tela de cadastro será configurada na próxima etapa.'
-    );
+    props.onCadastro();
+  }
+
+  function abrirRecuperarSenha(): void {
+    props.onRecuperarSenha();
   }
 
   return (
@@ -162,88 +160,53 @@ export default function LoginScreen(props: any): React.ReactElement {
         { backgroundColor: cores.fundo },
       ]}
     >
-      <View style={styles.topo}>
-        <View style={styles.topoEspaco} />
+      <View style={styles.areaTema}>
+        <Text style={[styles.textoTema, { color: cores.texto }]}>
+          Tema claro
+        </Text>
 
+        <Switch
+          value={!temaEscuro}
+          onValueChange={(valor: boolean) => setTemaEscuro(!valor)}
+          trackColor={{ false: '#334155', true: '#008B7A' }}
+          thumbColor="#FFFFFF"
+        />
+      </View>
+
+      <View style={styles.areaLogo}>
         <Image
           source={require('../../assets/Animed_Logo.png')}
           style={styles.logo}
         />
 
-        <TouchableHighlight
-          style={[
-            styles.botaoMenu,
-            {
-              backgroundColor: cores.fundoSecundario,
-              borderColor: cores.borda,
-            },
-          ]}
-          underlayColor={cores.destaque}
-          onPress={() => setModalTemaVisivel(true)}
-        >
-          <Text style={[styles.textoMenu, { color: cores.texto }]}>☰</Text>
-        </TouchableHighlight>
+        <Text style={[styles.nomeApp, { color: cores.texto }]}>Animed</Text>
+
+        <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
+          Acesse sua conta para continuar
+        </Text>
       </View>
 
-      <Text style={[styles.titulo, { color: cores.texto }]}>Login</Text>
-
-      <Text style={[styles.label, { color: cores.texto }]}>Tipo de acesso</Text>
-
-      <View style={styles.linhaBotoes}>
-        <TouchableHighlight
-          style={[
-            styles.botaoTipo,
-            {
-              backgroundColor: cores.fundoSecundario,
-              borderColor: cores.borda,
-            },
-            tipoAcesso === 'CPF'
-              ? {
-                  backgroundColor: cores.destaque,
-                  borderColor: cores.destaqueBorda,
-                }
-              : null,
-          ]}
-          underlayColor={cores.destaque}
-          onPress={() => alterarTipoAcesso('CPF')}
-        >
-          <Text
-            style={[
-              styles.textoBotaoTipo,
-              { color: tipoAcesso === 'CPF' ? '#FFFFFF' : cores.texto },
-            ]}
-          >
-            CPF
+      <TouchableHighlight
+        style={[
+          styles.selectTipo,
+          {
+            backgroundColor: cores.input,
+            borderColor: cores.borda,
+          },
+        ]}
+        underlayColor={cores.card}
+        onPress={() => setModalTipoVisivel(true)}
+      >
+        <View style={styles.selectConteudo}>
+          <Text style={[styles.selectTexto, { color: cores.texto }]}>
+            {tipoAcesso === 'CPF' ? 'Acesso via CPF' : 'Acesso via CRMV'}
           </Text>
-        </TouchableHighlight>
 
-        <TouchableHighlight
-          style={[
-            styles.botaoTipo,
-            {
-              backgroundColor: cores.fundoSecundario,
-              borderColor: cores.borda,
-            },
-            tipoAcesso === 'CRMV'
-              ? {
-                  backgroundColor: cores.destaque,
-                  borderColor: cores.destaqueBorda,
-                }
-              : null,
-          ]}
-          underlayColor={cores.destaque}
-          onPress={() => alterarTipoAcesso('CRMV')}
-        >
-          <Text
-            style={[
-              styles.textoBotaoTipo,
-              { color: tipoAcesso === 'CRMV' ? '#FFFFFF' : cores.texto },
-            ]}
-          >
-            CRMV
+          <Text style={[styles.selectSeta, { color: cores.textoSecundario }]}>
+            ▼
           </Text>
-        </TouchableHighlight>
-      </View>
+        </View>
+      </TouchableHighlight>
 
       <Text style={[styles.label, { color: cores.texto }]}>
         {tipoAcesso === 'CPF' ? 'CPF' : 'Número do CRMV'}
@@ -254,7 +217,7 @@ export default function LoginScreen(props: any): React.ReactElement {
           style={[
             styles.input,
             {
-              backgroundColor: cores.fundoSecundario,
+              backgroundColor: cores.input,
               borderColor: cores.borda,
               color: cores.texto,
             },
@@ -272,7 +235,7 @@ export default function LoginScreen(props: any): React.ReactElement {
             style={[
               styles.inputCrmv,
               {
-                backgroundColor: cores.fundoSecundario,
+                backgroundColor: cores.input,
                 borderColor: cores.borda,
                 color: cores.texto,
               },
@@ -289,11 +252,11 @@ export default function LoginScreen(props: any): React.ReactElement {
             style={[
               styles.botaoUf,
               {
-                backgroundColor: cores.fundoSecundario,
+                backgroundColor: cores.input,
                 borderColor: cores.borda,
               },
             ]}
-            underlayColor={cores.destaque}
+            underlayColor={cores.card}
             onPress={() => setModalEstadosVisivel(true)}
           >
             <Text style={[styles.textoUf, { color: cores.texto }]}>
@@ -309,7 +272,7 @@ export default function LoginScreen(props: any): React.ReactElement {
         style={[
           styles.input,
           {
-            backgroundColor: cores.fundoSecundario,
+            backgroundColor: cores.input,
             borderColor: cores.borda,
             color: cores.texto,
           },
@@ -326,18 +289,123 @@ export default function LoginScreen(props: any): React.ReactElement {
         underlayColor="#006F62"
         onPress={entrar}
       >
-        <Text style={styles.textoBotaoEntrar}>Entrar</Text>
+        <Text style={styles.textoBotaoEntrar}>Entrar no Sistema</Text>
       </TouchableHighlight>
 
       <TouchableHighlight
-        style={styles.botaoCadastro}
+        style={styles.botaoLink}
         underlayColor="transparent"
-        onPress={abrirCadastro}
+        onPress={abrirRecuperarSenha}
       >
-        <Text style={[styles.textoCadastro, { color: cores.link }]}>
-          Cadastre-se
+        <Text style={[styles.textoLink, { color: cores.link }]}>
+          Esqueceu a senha?
         </Text>
       </TouchableHighlight>
+
+      <View style={styles.areaCadastro}>
+        <Text style={[styles.textoConta, { color: cores.textoSecundario }]}>
+          Não tem uma conta?
+        </Text>
+
+        <TouchableHighlight
+          style={styles.botaoCadastro}
+          underlayColor="transparent"
+          onPress={abrirCadastro}
+        >
+          <Text style={[styles.textoCadastro, { color: cores.destaque }]}>
+            Cadastre-se
+          </Text>
+        </TouchableHighlight>
+      </View>
+
+      <Modal
+        visible={modalTipoVisivel}
+        transparent={true}
+        animationType="fade"
+      >
+        <View
+          style={[
+            styles.modalOverlay,
+            { backgroundColor: cores.sobreposicao },
+          ]}
+        >
+          <View
+            style={[
+              styles.modalCardPequeno,
+              {
+                backgroundColor: cores.modalFundo,
+                borderColor: cores.borda,
+              },
+            ]}
+          >
+            <Text style={[styles.modalTitulo, { color: cores.texto }]}>
+              Tipo de acesso
+            </Text>
+
+            <TouchableHighlight
+              style={[
+                styles.itemModal,
+                {
+                  backgroundColor:
+                    tipoAcesso === 'CPF' ? cores.destaque : cores.input,
+                  borderColor:
+                    tipoAcesso === 'CPF' ? cores.destaqueBorda : cores.borda,
+                },
+              ]}
+              underlayColor={cores.destaque}
+              onPress={() => selecionarTipoAcesso('CPF')}
+            >
+              <Text
+                style={[
+                  styles.textoItemModal,
+                  { color: tipoAcesso === 'CPF' ? '#FFFFFF' : cores.texto },
+                ]}
+              >
+                Acesso via CPF
+              </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+              style={[
+                styles.itemModal,
+                {
+                  backgroundColor:
+                    tipoAcesso === 'CRMV' ? cores.destaque : cores.input,
+                  borderColor:
+                    tipoAcesso === 'CRMV' ? cores.destaqueBorda : cores.borda,
+                },
+              ]}
+              underlayColor={cores.destaque}
+              onPress={() => selecionarTipoAcesso('CRMV')}
+            >
+              <Text
+                style={[
+                  styles.textoItemModal,
+                  { color: tipoAcesso === 'CRMV' ? '#FFFFFF' : cores.texto },
+                ]}
+              >
+                Acesso via CRMV
+              </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+              style={[
+                styles.botaoFecharModal,
+                {
+                  backgroundColor: cores.input,
+                  borderColor: cores.borda,
+                },
+              ]}
+              underlayColor={cores.card}
+              onPress={() => setModalTipoVisivel(false)}
+            >
+              <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
+                Fechar
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
 
       <Modal
         visible={modalEstadosVisivel}
@@ -354,7 +422,7 @@ export default function LoginScreen(props: any): React.ReactElement {
             style={[
               styles.modalCard,
               {
-                backgroundColor: cores.cardModal,
+                backgroundColor: cores.modalFundo,
                 borderColor: cores.borda,
               },
             ]}
@@ -368,10 +436,10 @@ export default function LoginScreen(props: any): React.ReactElement {
                 <TouchableHighlight
                   key={uf}
                   style={[
-                    styles.itemEstado,
+                    styles.itemModal,
                     {
                       backgroundColor:
-                        ufCrmv === uf ? cores.destaque : cores.fundoSecundario,
+                        ufCrmv === uf ? cores.destaque : cores.input,
                       borderColor:
                         ufCrmv === uf ? cores.destaqueBorda : cores.borda,
                     },
@@ -381,7 +449,7 @@ export default function LoginScreen(props: any): React.ReactElement {
                 >
                   <Text
                     style={[
-                      styles.textoItemEstado,
+                      styles.textoItemModal,
                       { color: ufCrmv === uf ? '#FFFFFF' : cores.texto },
                     ]}
                   >
@@ -395,87 +463,12 @@ export default function LoginScreen(props: any): React.ReactElement {
               style={[
                 styles.botaoFecharModal,
                 {
-                  backgroundColor: cores.fundoSecundario,
+                  backgroundColor: cores.input,
                   borderColor: cores.borda,
                 },
               ]}
-              underlayColor={cores.destaque}
+              underlayColor={cores.card}
               onPress={() => setModalEstadosVisivel(false)}
-            >
-              <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
-                Fechar
-              </Text>
-            </TouchableHighlight>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        visible={modalTemaVisivel}
-        transparent={true}
-        animationType="fade"
-      >
-        <View
-          style={[
-            styles.modalOverlay,
-            { backgroundColor: cores.sobreposicao },
-          ]}
-        >
-          <View
-            style={[
-              styles.modalTemaCard,
-              {
-                backgroundColor: cores.cardModal,
-                borderColor: cores.borda,
-              },
-            ]}
-          >
-            <Text style={[styles.modalTitulo, { color: cores.texto }]}>
-              Configurações
-            </Text>
-
-            <View
-              style={[
-                styles.linhaTema,
-                {
-                  backgroundColor: cores.fundoSecundario,
-                  borderColor: cores.borda,
-                },
-              ]}
-            >
-              <View>
-                <Text style={[styles.textoBotaoTema, { color: cores.texto }]}>
-                  Tema escuro
-                </Text>
-
-                <Text
-                  style={[
-                    styles.textoTemaDescricao,
-                    { color: cores.textoSecundario },
-                  ]}
-                >
-                  {temaEscuro ? 'Ativado' : 'Desativado'}
-                </Text>
-              </View>
-
-              <Switch
-                value={temaEscuro}
-                onValueChange={alterarTema}
-                trackColor={{ false: '#B8C6D6', true: '#008B7A' }}
-                thumbColor={temaEscuro ? '#FFFFFF' : '#F4F4F4'}
-              />
-            </View>
-
-            <TouchableHighlight
-              style={[
-                styles.botaoFecharModal,
-                {
-                  backgroundColor: cores.fundoSecundario,
-                  borderColor: cores.borda,
-                },
-              ]}
-              underlayColor={cores.destaque}
-              onPress={() => setModalTemaVisivel(false)}
             >
               <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
                 Fechar
@@ -491,64 +484,69 @@ export default function LoginScreen(props: any): React.ReactElement {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 24,
-  },
-  topo: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  topoEspaco: {
-    width: 46,
-  },
-  logo: {
-    width: 140,
-    height: 80,
-    resizeMode: 'contain',
-  },
-  botaoMenu: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    borderWidth: 1,
-    alignItems: 'center',
+    paddingLeft: 24,
+    paddingRight: 24,
+    paddingTop: 34,
+    paddingBottom: 32,
     justifyContent: 'center',
   },
-  textoMenu: {
-    fontSize: 20,
+  areaTema: {
+    position: 'absolute',
+    top: 18,
+    left: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textoTema: {
+    fontSize: 12,
+    marginRight: 8,
+  },
+  areaLogo: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  logo: {
+    width: 120,
+    height: 90,
+    resizeMode: 'contain',
+    marginBottom: 6,
+  },
+  nomeApp: {
+    fontSize: 32,
     fontWeight: 'bold',
   },
-  titulo: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 28,
+  subtitulo: {
+    fontSize: 14,
+    marginTop: 6,
   },
   label: {
     width: '100%',
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 8,
-    marginTop: 8,
+    marginTop: 12,
   },
-  linhaBotoes: {
+  selectTipo: {
     width: '100%',
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  botaoTipo: {
-    flex: 1,
-    height: 46,
+    height: 52,
     borderWidth: 1,
     borderRadius: 14,
-    alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
+    marginBottom: 12,
   },
-  textoBotaoTipo: {
-    fontWeight: 'bold',
+  selectConteudo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  selectTexto: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  selectSeta: {
+    fontSize: 12,
   },
   input: {
     width: '100%',
@@ -557,13 +555,13 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingLeft: 16,
     paddingRight: 16,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   linhaDocumento: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   inputCrmv: {
     flex: 1,
@@ -592,21 +590,37 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 18,
-    marginBottom: 18,
+    marginTop: 22,
+    marginBottom: 22,
   },
   textoBotaoEntrar: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  botaoCadastro: {
+  botaoLink: {
     padding: 8,
     alignSelf: 'center',
   },
+  textoLink: {
+    fontSize: 14,
+  },
+  areaCadastro: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 18,
+  },
+  textoConta: {
+    fontSize: 14,
+    marginRight: 4,
+  },
+  botaoCadastro: {
+    padding: 4,
+  },
   textoCadastro: {
-    fontSize: 15,
-    fontStyle: 'italic',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
@@ -621,8 +635,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
   },
-  modalTemaCard: {
-    width: '85%',
+  modalCardPequeno: {
+    width: '88%',
     borderRadius: 16,
     borderWidth: 1,
     padding: 16,
@@ -636,36 +650,17 @@ const styles = StyleSheet.create({
   listaEstados: {
     marginBottom: 12,
   },
-  itemEstado: {
-    height: 42,
-    borderWidth: 1,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  textoItemEstado: {
-    fontWeight: 'bold',
-  },
-  linhaTema: {
-    width: '100%',
-    minHeight: 64,
+  itemModal: {
+    height: 46,
     borderWidth: 1,
     borderRadius: 12,
-    paddingLeft: 14,
-    paddingRight: 14,
-    marginBottom: 10,
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    marginBottom: 10,
   },
-  textoBotaoTema: {
+  textoItemModal: {
     fontWeight: 'bold',
-    fontSize: 15,
-  },
-  textoTemaDescricao: {
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: 14,
   },
   botaoFecharModal: {
     height: 46,
