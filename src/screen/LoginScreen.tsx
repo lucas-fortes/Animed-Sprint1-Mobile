@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import {
   Alert,
   Image,
+  Modal,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   TouchableHighlight,
@@ -21,6 +23,35 @@ export default function LoginScreen(props: any): React.ReactElement {
   const [documento, setDocumento] = useState<string>('');
   const [ufCrmv, setUfCrmv] = useState<string>('SP');
   const [senha, setSenha] = useState<string>('');
+  const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
+  const [modalEstadosVisivel, setModalEstadosVisivel] = useState<boolean>(false);
+  const [modalTemaVisivel, setModalTemaVisivel] = useState<boolean>(false);
+
+  const cores = temaEscuro
+    ? {
+        fundo: '#07111F',
+        fundoSecundario: '#111820',
+        borda: '#23415A',
+        texto: '#FFFFFF',
+        textoSecundario: '#8A96A8',
+        destaque: '#008B7A',
+        destaqueBorda: '#00C2A8',
+        link: '#00C2FF',
+        sobreposicao: 'rgba(0, 0, 0, 0.60)',
+        cardModal: '#0E1726',
+      }
+    : {
+        fundo: '#F2F6FA',
+        fundoSecundario: '#FFFFFF',
+        borda: '#B8C6D6',
+        texto: '#102033',
+        textoSecundario: '#6B7A8C',
+        destaque: '#008B7A',
+        destaqueBorda: '#00A693',
+        link: '#0077CC',
+        sobreposicao: 'rgba(0, 0, 0, 0.35)',
+        cardModal: '#FFFFFF',
+      };
 
   function formatarCpf(valor: string): string {
     const numeros = valor.replace(/\D/g, '').slice(0, 11);
@@ -67,6 +98,15 @@ export default function LoginScreen(props: any): React.ReactElement {
     setDocumento('');
   }
 
+  function alterarTema(valor: boolean): void {
+    setTemaEscuro(valor);
+  }
+
+  function selecionarEstado(uf: string): void {
+    setUfCrmv(uf);
+    setModalEstadosVisivel(false);
+  }
+
   function validarLogin(): boolean {
     const documentoNumerico = documento.replace(/\D/g, '');
 
@@ -100,16 +140,12 @@ export default function LoginScreen(props: any): React.ReactElement {
       return;
     }
 
-    Alert.alert(
-      'Login',
-      'Login realizado em modo demonstrativo.',
-      [
-        {
-          text: 'OK',
-          onPress: () => props.onLogin(),
-        },
-      ]
-    );
+    Alert.alert('Login', 'Login realizado em modo demonstrativo.', [
+      {
+        text: 'OK',
+        onPress: () => props.onLogin(),
+      },
+    ]);
   }
 
   function abrirCadastro(): void {
@@ -120,89 +156,173 @@ export default function LoginScreen(props: any): React.ReactElement {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Image
-        source={require('../../assets/logo-animed.png')}
-        style={styles.logo}
-      />
+    <ScrollView
+      contentContainerStyle={[
+        styles.container,
+        { backgroundColor: cores.fundo },
+      ]}
+    >
+      <View style={styles.topo}>
+        <View style={styles.topoEspaco} />
 
-      <Text style={styles.titulo}>Login</Text>
+        <Image
+          source={require('../../assets/Animed_Logo.png')}
+          style={styles.logo}
+        />
 
-      <Text style={styles.label}>Tipo de acesso</Text>
+        <TouchableHighlight
+          style={[
+            styles.botaoMenu,
+            {
+              backgroundColor: cores.fundoSecundario,
+              borderColor: cores.borda,
+            },
+          ]}
+          underlayColor={cores.destaque}
+          onPress={() => setModalTemaVisivel(true)}
+        >
+          <Text style={[styles.textoMenu, { color: cores.texto }]}>☰</Text>
+        </TouchableHighlight>
+      </View>
+
+      <Text style={[styles.titulo, { color: cores.texto }]}>Login</Text>
+
+      <Text style={[styles.label, { color: cores.texto }]}>Tipo de acesso</Text>
 
       <View style={styles.linhaBotoes}>
         <TouchableHighlight
           style={[
             styles.botaoTipo,
-            tipoAcesso === 'CPF' ? styles.botaoTipoSelecionado : null,
+            {
+              backgroundColor: cores.fundoSecundario,
+              borderColor: cores.borda,
+            },
+            tipoAcesso === 'CPF'
+              ? {
+                  backgroundColor: cores.destaque,
+                  borderColor: cores.destaqueBorda,
+                }
+              : null,
           ]}
-          underlayColor="#008B7A"
+          underlayColor={cores.destaque}
           onPress={() => alterarTipoAcesso('CPF')}
         >
-          <Text style={styles.textoBotaoTipo}>CPF</Text>
+          <Text
+            style={[
+              styles.textoBotaoTipo,
+              { color: tipoAcesso === 'CPF' ? '#FFFFFF' : cores.texto },
+            ]}
+          >
+            CPF
+          </Text>
         </TouchableHighlight>
 
         <TouchableHighlight
           style={[
             styles.botaoTipo,
-            tipoAcesso === 'CRMV' ? styles.botaoTipoSelecionado : null,
+            {
+              backgroundColor: cores.fundoSecundario,
+              borderColor: cores.borda,
+            },
+            tipoAcesso === 'CRMV'
+              ? {
+                  backgroundColor: cores.destaque,
+                  borderColor: cores.destaqueBorda,
+                }
+              : null,
           ]}
-          underlayColor="#008B7A"
+          underlayColor={cores.destaque}
           onPress={() => alterarTipoAcesso('CRMV')}
         >
-          <Text style={styles.textoBotaoTipo}>CRMV</Text>
+          <Text
+            style={[
+              styles.textoBotaoTipo,
+              { color: tipoAcesso === 'CRMV' ? '#FFFFFF' : cores.texto },
+            ]}
+          >
+            CRMV
+          </Text>
         </TouchableHighlight>
       </View>
 
-      <Text style={styles.label}>
+      <Text style={[styles.label, { color: cores.texto }]}>
         {tipoAcesso === 'CPF' ? 'CPF' : 'Número do CRMV'}
       </Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder={tipoAcesso === 'CPF' ? '000.000.000-00' : 'Digite seu CRMV'}
-        placeholderTextColor="#8A96A8"
-        value={documento}
-        onChangeText={alterarDocumento}
-        keyboardType="numeric"
-        maxLength={tipoAcesso === 'CPF' ? 14 : 10}
-      />
+      {tipoAcesso === 'CPF' ? (
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: cores.fundoSecundario,
+              borderColor: cores.borda,
+              color: cores.texto,
+            },
+          ]}
+          placeholder="000.000.000-00"
+          placeholderTextColor={cores.textoSecundario}
+          value={documento}
+          onChangeText={alterarDocumento}
+          keyboardType="numeric"
+          maxLength={14}
+        />
+      ) : (
+        <View style={styles.linhaDocumento}>
+          <TextInput
+            style={[
+              styles.inputCrmv,
+              {
+                backgroundColor: cores.fundoSecundario,
+                borderColor: cores.borda,
+                color: cores.texto,
+              },
+            ]}
+            placeholder="Digite seu CRMV"
+            placeholderTextColor={cores.textoSecundario}
+            value={documento}
+            onChangeText={alterarDocumento}
+            keyboardType="numeric"
+            maxLength={10}
+          />
 
-      {tipoAcesso === 'CRMV' && (
-        <View style={styles.areaEstados}>
-          <Text style={styles.label}>Estado do CRMV</Text>
-
-          <View style={styles.estadosContainer}>
-            {ESTADOS_BRASIL.map((uf) => (
-              <TouchableHighlight
-                key={uf}
-                style={[
-                  styles.botaoEstado,
-                  ufCrmv === uf ? styles.botaoEstadoSelecionado : null,
-                ]}
-                underlayColor="#008B7A"
-                onPress={() => setUfCrmv(uf)}
-              >
-                <Text style={styles.textoEstado}>{uf}</Text>
-              </TouchableHighlight>
-            ))}
-          </View>
+          <TouchableHighlight
+            style={[
+              styles.botaoUf,
+              {
+                backgroundColor: cores.fundoSecundario,
+                borderColor: cores.borda,
+              },
+            ]}
+            underlayColor={cores.destaque}
+            onPress={() => setModalEstadosVisivel(true)}
+          >
+            <Text style={[styles.textoUf, { color: cores.texto }]}>
+              {ufCrmv} ▼
+            </Text>
+          </TouchableHighlight>
         </View>
       )}
 
-      <Text style={styles.label}>Senha</Text>
+      <Text style={[styles.label, { color: cores.texto }]}>Senha</Text>
 
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            backgroundColor: cores.fundoSecundario,
+            borderColor: cores.borda,
+            color: cores.texto,
+          },
+        ]}
         placeholder="Digite sua senha"
-        placeholderTextColor="#8A96A8"
+        placeholderTextColor={cores.textoSecundario}
         value={senha}
         onChangeText={setSenha}
         secureTextEntry={true}
       />
 
       <TouchableHighlight
-        style={styles.botaoEntrar}
+        style={[styles.botaoEntrar, { backgroundColor: cores.destaque }]}
         underlayColor="#006F62"
         onPress={entrar}
       >
@@ -214,8 +334,156 @@ export default function LoginScreen(props: any): React.ReactElement {
         underlayColor="transparent"
         onPress={abrirCadastro}
       >
-        <Text style={styles.textoCadastro}>Cadastre-se</Text>
+        <Text style={[styles.textoCadastro, { color: cores.link }]}>
+          Cadastre-se
+        </Text>
       </TouchableHighlight>
+
+      <Modal
+        visible={modalEstadosVisivel}
+        transparent={true}
+        animationType="fade"
+      >
+        <View
+          style={[
+            styles.modalOverlay,
+            { backgroundColor: cores.sobreposicao },
+          ]}
+        >
+          <View
+            style={[
+              styles.modalCard,
+              {
+                backgroundColor: cores.cardModal,
+                borderColor: cores.borda,
+              },
+            ]}
+          >
+            <Text style={[styles.modalTitulo, { color: cores.texto }]}>
+              Selecione o Estado
+            </Text>
+
+            <ScrollView style={styles.listaEstados}>
+              {ESTADOS_BRASIL.map((uf) => (
+                <TouchableHighlight
+                  key={uf}
+                  style={[
+                    styles.itemEstado,
+                    {
+                      backgroundColor:
+                        ufCrmv === uf ? cores.destaque : cores.fundoSecundario,
+                      borderColor:
+                        ufCrmv === uf ? cores.destaqueBorda : cores.borda,
+                    },
+                  ]}
+                  underlayColor={cores.destaque}
+                  onPress={() => selecionarEstado(uf)}
+                >
+                  <Text
+                    style={[
+                      styles.textoItemEstado,
+                      { color: ufCrmv === uf ? '#FFFFFF' : cores.texto },
+                    ]}
+                  >
+                    {uf}
+                  </Text>
+                </TouchableHighlight>
+              ))}
+            </ScrollView>
+
+            <TouchableHighlight
+              style={[
+                styles.botaoFecharModal,
+                {
+                  backgroundColor: cores.fundoSecundario,
+                  borderColor: cores.borda,
+                },
+              ]}
+              underlayColor={cores.destaque}
+              onPress={() => setModalEstadosVisivel(false)}
+            >
+              <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
+                Fechar
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={modalTemaVisivel}
+        transparent={true}
+        animationType="fade"
+      >
+        <View
+          style={[
+            styles.modalOverlay,
+            { backgroundColor: cores.sobreposicao },
+          ]}
+        >
+          <View
+            style={[
+              styles.modalTemaCard,
+              {
+                backgroundColor: cores.cardModal,
+                borderColor: cores.borda,
+              },
+            ]}
+          >
+            <Text style={[styles.modalTitulo, { color: cores.texto }]}>
+              Configurações
+            </Text>
+
+            <View
+              style={[
+                styles.linhaTema,
+                {
+                  backgroundColor: cores.fundoSecundario,
+                  borderColor: cores.borda,
+                },
+              ]}
+            >
+              <View>
+                <Text style={[styles.textoBotaoTema, { color: cores.texto }]}>
+                  Tema escuro
+                </Text>
+
+                <Text
+                  style={[
+                    styles.textoTemaDescricao,
+                    { color: cores.textoSecundario },
+                  ]}
+                >
+                  {temaEscuro ? 'Ativado' : 'Desativado'}
+                </Text>
+              </View>
+
+              <Switch
+                value={temaEscuro}
+                onValueChange={alterarTema}
+                trackColor={{ false: '#B8C6D6', true: '#008B7A' }}
+                thumbColor={temaEscuro ? '#FFFFFF' : '#F4F4F4'}
+              />
+            </View>
+
+            <TouchableHighlight
+              style={[
+                styles.botaoFecharModal,
+                {
+                  backgroundColor: cores.fundoSecundario,
+                  borderColor: cores.borda,
+                },
+              ]}
+              underlayColor={cores.destaque}
+              onPress={() => setModalTemaVisivel(false)}
+            >
+              <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
+                Fechar
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -223,26 +491,43 @@ export default function LoginScreen(props: any): React.ReactElement {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#07111F',
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 24,
   },
+  topo: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  topoEspaco: {
+    width: 46,
+  },
   logo: {
-    width: 170,
-    height: 170,
+    width: 140,
+    height: 80,
     resizeMode: 'contain',
-    marginBottom: 8,
+  },
+  botaoMenu: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textoMenu: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   titulo: {
-    color: '#FFFFFF',
     fontSize: 30,
     fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 28,
   },
   label: {
     width: '100%',
-    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 8,
@@ -256,68 +541,54 @@ const styles = StyleSheet.create({
   botaoTipo: {
     flex: 1,
     height: 46,
-    backgroundColor: '#111820',
     borderWidth: 1,
-    borderColor: '#23415A',
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
   },
-  botaoTipoSelecionado: {
-    backgroundColor: '#008B7A',
-    borderColor: '#00C2A8',
-  },
   textoBotaoTipo: {
-    color: '#FFFFFF',
     fontWeight: 'bold',
   },
   input: {
     width: '100%',
     height: 52,
-    backgroundColor: '#111820',
     borderWidth: 1,
-    borderColor: '#23415A',
     borderRadius: 14,
-    color: '#FFFFFF',
     paddingLeft: 16,
     paddingRight: 16,
     marginBottom: 10,
   },
-  areaEstados: {
-    width: '100%',
-  },
-  estadosContainer: {
+  linhaDocumento: {
     width: '100%',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignItems: 'center',
     marginBottom: 10,
   },
-  botaoEstado: {
-    width: '18%',
-    height: 38,
-    backgroundColor: '#111820',
+  inputCrmv: {
+    flex: 1,
+    height: 52,
     borderWidth: 1,
-    borderColor: '#23415A',
-    borderRadius: 10,
+    borderRadius: 14,
+    paddingLeft: 16,
+    paddingRight: 16,
+    marginRight: 8,
+  },
+  botaoUf: {
+    width: 82,
+    height: 52,
+    borderWidth: 1,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 6,
-    marginBottom: 8,
   },
-  botaoEstadoSelecionado: {
-    backgroundColor: '#008B7A',
-    borderColor: '#00C2A8',
-  },
-  textoEstado: {
-    color: '#FFFFFF',
+  textoUf: {
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 14,
   },
   botaoEntrar: {
     width: '100%',
     height: 54,
-    backgroundColor: '#008B7A',
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -331,10 +602,80 @@ const styles = StyleSheet.create({
   },
   botaoCadastro: {
     padding: 8,
+    alignSelf: 'center',
   },
   textoCadastro: {
-    color: '#00C2FF',
     fontSize: 15,
     fontStyle: 'italic',
+  },
+  modalOverlay: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  modalCard: {
+    width: '90%',
+    maxHeight: '70%',
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+  },
+  modalTemaCard: {
+    width: '85%',
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+  },
+  modalTitulo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 14,
+    textAlign: 'center',
+  },
+  listaEstados: {
+    marginBottom: 12,
+  },
+  itemEstado: {
+    height: 42,
+    borderWidth: 1,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  textoItemEstado: {
+    fontWeight: 'bold',
+  },
+  linhaTema: {
+    width: '100%',
+    minHeight: 64,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingLeft: 14,
+    paddingRight: 14,
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  textoBotaoTema: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  textoTemaDescricao: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  botaoFecharModal: {
+    height: 46,
+    borderWidth: 1,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  textoFecharModal: {
+    fontWeight: 'bold',
   },
 });

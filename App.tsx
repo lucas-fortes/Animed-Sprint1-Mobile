@@ -5,6 +5,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import LoginScreen from './src/screen/LoginScreen';
+import CadastroScreen from './src/screen/CadastroScreen';
+import RecuperarSenhaScreen from './src/screen/RecuperarSenhaScreen';
+
 import DashboardScreen from './src/screen/DashboardScreen';
 import RegistroClinicoScreen from './src/screen/RegistroClinicoScreen';
 import HistoricoClinicoScreen from './src/screen/HistoricoClinicoScreen';
@@ -78,12 +81,35 @@ function AppTabs(): React.ReactElement {
 
 export default function App(): React.ReactElement {
   const [logado, setLogado] = useState<boolean>(false);
+  const [telaAuth, setTelaAuth] = useState<string>('login');
 
-  if (logado === false) {
-    return <LoginScreen onLogin={() => setLogado(true)} />;
+  if (logado === true) {
+    return <AppTabs />;
   }
 
-  return <AppTabs />;
+  if (telaAuth === 'cadastro') {
+    return (
+      <CadastroScreen
+        onVoltarLogin={() => setTelaAuth('login')}
+      />
+    );
+  }
+
+  if (telaAuth === 'recuperarSenha') {
+    return (
+      <RecuperarSenhaScreen
+        onVoltarLogin={() => setTelaAuth('login')}
+      />
+    );
+  }
+
+  return (
+    <LoginScreen
+      onLogin={() => setLogado(true)}
+      onCadastro={() => setTelaAuth('cadastro')}
+      onRecuperarSenha={() => setTelaAuth('recuperarSenha')}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
