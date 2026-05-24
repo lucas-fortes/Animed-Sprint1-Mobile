@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
   Alert,
@@ -13,6 +17,7 @@ import {
   View,
 } from 'react-native';
 
+import { RegistroClinico } from '../model/RegistroClinico';
 type Atendimento = {
   id: number;
   horario: string;
@@ -22,84 +27,102 @@ type Atendimento = {
   urgencia: string;
 };
 
-const ATENDIMENTOS_DIA: Atendimento[] = [
-  {
-    id: 1,
-    horario: '09:00',
-    animal: 'Rex',
-    motivo: 'Check-up de rotina',
-    tutor: 'Ana Silva',
-    urgencia: 'Baixa',
-  },
-  {
-    id: 2,
-    horario: '10:30',
-    animal: 'Thor',
-    motivo: 'Retorno pós-cirúrgico',
-    tutor: 'Carlos Mendes',
-    urgencia: 'Média',
-  },
-  {
-    id: 3,
-    horario: '13:00',
-    animal: 'Mimosa',
-    motivo: 'Emergência respiratória',
-    tutor: 'Fazenda Esperança',
-    urgencia: 'Alta',
-  },
-  {
-    id: 4,
-    horario: '15:00',
-    animal: 'Luna',
-    motivo: 'Vacinação V4',
-    tutor: 'Mariana Costa',
-    urgencia: 'Baixa',
-  },
-  {
-    id: 5,
-    horario: '16:30',
-    animal: 'Belinha',
-    motivo: 'Retorno dermatológico',
-    tutor: 'Fernanda Lima',
-    urgencia: 'Média',
-  },
-];
+const CHAVE_REGISTROS = '@animed:registrosClinicos';
 
 export default function DashboardScreen(): React.ReactElement {
   const [modalMenuVisivel, setModalMenuVisivel] = useState<boolean>(false);
   const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
-  const [atendimentosDia] = useState<Atendimento[]>(ATENDIMENTOS_DIA);
+  const [atendimentosDia, setAtendimentosDia] = useState<Atendimento[]>([]);
 
   const totalAtendimentosHoje = atendimentosDia.length;
   const totalOcorrenciasMes = atendimentosDia.length;
 
   const cores = temaEscuro
     ? {
-        fundo: '#07111F',
-        card: '#172232',
-        cardSecundario: '#171A22',
-        borda: '#23415A',
-        texto: '#FFFFFF',
-        textoSecundario: '#8A96A8',
-        destaque: '#008B7A',
-        destaqueClaro: '#00C2A8',
-        perigo: '#D62828',
-        alerta: '#D99000',
-        baixo: '#00A693',
-      }
+      fundo: '#07111F',
+      card: '#172232',
+      cardSecundario: '#171A22',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueClaro: '#00C2A8',
+      perigo: '#D62828',
+      alerta: '#D99000',
+      baixo: '#00A693',
+    }
     : {
-        fundo: '#F2F6FA',
-        card: '#FFFFFF',
-        cardSecundario: '#EAF2F7',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#6B7A8C',
-        destaque: '#008B7A',
-        destaqueClaro: '#00A693',
-        perigo: '#C62828',
-        alerta: '#B87500',
-        baixo: '#008B7A',
-      };
+      fundo: '#F2F6FA',
+      card: '#FFFFFF',
+      cardSecundario: '#EAF2F7',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueClaro: '#00A693',
+      perigo: '#C62828',
+      alerta: '#B87500',
+      baixo: '#008B7A',
+    };
+   function obterDataHoje(): string {
+    const hoje = new Date();
+
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const ano = String(hoje.getFullYear());
+
+    return dia + '/' + mes + '/' + ano;
+  }
+
+  async function carregarRegistrosDoDia(): Promise<void> {
+    try {
+      const dadosSalvos = await AsyncStorage.getItem(CHAVE_REGISTROS);
+
+      if (dadosSalvos === null) {
+        setAtendimentosDia([]);
+        return;
+      }
+
+      const registros: RegistroClinico[] = JSON.parse(dadosSalvos);
+      const dataHoje = obterDataHoje();
+
+      const registrosDeHoje = registros.filter(
+        (registro) => registro.dataRetorno === dataHoje
+      );
+
+      const atendimentosConvertidos: Atendimento[] = registrosDeHoje.map(
+        (registro, index) => {
+          return {
+            id: registro.id,
+            horario: String(index + 1).padStart(2, '0') + ':00',
+            animal: registro.nomeAnimal,
+            motivo: registro.observacoes,
+            tutor: registro.nomeTutor,
+            urgencia: registro.urgencia,
+          };
+        }
+      );
+
+      setAtendimentosDia(atendimentosConvertidos);
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Não foi possível carregar os registros clínicos salvos.'
+      );
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarRegistrosDoDia();
+    }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarRegistrosDoDia();
+    }, [])
+  );
 
   function alternarTema(): void {
     setTemaEscuro(!temaEscuro);
@@ -151,8 +174,8 @@ export default function DashboardScreen(): React.ReactElement {
     Alert.alert(
       'Agenda do Dia',
       'Existem ' +
-        totalAtendimentosHoje +
-        ' atendimentos cadastrados para hoje.'
+      totalAtendimentosHoje +
+      ' atendimentos cadastrados para hoje.'
     );
   }
 
@@ -160,13 +183,13 @@ export default function DashboardScreen(): React.ReactElement {
     Alert.alert(
       atendimento.animal,
       'Horário: ' +
-        atendimento.horario +
-        '\nMotivo: ' +
-        atendimento.motivo +
-        '\nTutor: ' +
-        atendimento.tutor +
-        '\nUrgência: ' +
-        atendimento.urgencia
+      atendimento.horario +
+      '\nMotivo: ' +
+      atendimento.motivo +
+      '\nTutor: ' +
+      atendimento.tutor +
+      '\nUrgência: ' +
+      atendimento.urgencia
     );
   }
 
