@@ -50,51 +50,51 @@ export default function DashboardScreen(
 
   const cores = temaEscuro
     ? {
-        fundo: '#07111F',
-        card: '#172232',
-        cardSecundario: '#171A22',
-        borda: '#23415A',
-        texto: '#FFFFFF',
-        textoSecundario: '#8A96A8',
-        destaque: '#008B7A',
-        destaqueClaro: '#00C2A8',
-        perigo: '#D62828',
-        alerta: '#D99000',
-        baixo: '#00A693',
-      }
+      fundo: '#07111F',
+      card: '#172232',
+      cardSecundario: '#171A22',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueClaro: '#00C2A8',
+      perigo: '#D62828',
+      alerta: '#D99000',
+      baixo: '#00A693',
+    }
     : {
-        fundo: '#F2F6FA',
-        card: '#FFFFFF',
-        cardSecundario: '#EAF2F7',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#6B7A8C',
-        destaque: '#008B7A',
-        destaqueClaro: '#00A693',
-        perigo: '#C62828',
-        alerta: '#B87500',
-        baixo: '#008B7A',
-      };
+      fundo: '#F2F6FA',
+      card: '#FFFFFF',
+      cardSecundario: '#EAF2F7',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueClaro: '#00A693',
+      perigo: '#C62828',
+      alerta: '#B87500',
+      baixo: '#008B7A',
+    };
 
   const coresMenu = temaEscuro
     ? {
-        fundo: '#0B1526',
-        fundoItem: '#0B1526',
-        fundoAtivo: '#12384A',
-        borda: '#1D3147',
-        texto: '#FFFFFF',
-        textoSecundario: '#CBD5E1',
-        overlay: 'rgba(0, 0, 0, 0.55)',
-      }
+      fundo: '#0B1526',
+      fundoItem: '#0B1526',
+      fundoAtivo: '#12384A',
+      borda: '#1D3147',
+      texto: '#FFFFFF',
+      textoSecundario: '#CBD5E1',
+      overlay: 'rgba(0, 0, 0, 0.55)',
+    }
     : {
-        fundo: '#FFFFFF',
-        fundoItem: '#FFFFFF',
-        fundoAtivo: '#DDF7F3',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#516173',
-        overlay: 'rgba(0, 0, 0, 0.35)',
-      };
+      fundo: '#FFFFFF',
+      fundoItem: '#FFFFFF',
+      fundoAtivo: '#DDF7F3',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#516173',
+      overlay: 'rgba(0, 0, 0, 0.35)',
+    };
 
   function obterDataHoje(): string {
     const hoje = new Date();
@@ -202,8 +202,8 @@ export default function DashboardScreen(
     Alert.alert(
       'Agenda do Dia',
       'Existem ' +
-        totalAtendimentosHoje +
-        ' atendimentos cadastrados para hoje.'
+      totalAtendimentosHoje +
+      ' atendimentos cadastrados para hoje.'
     );
   }
 
@@ -211,13 +211,13 @@ export default function DashboardScreen(
     Alert.alert(
       atendimento.animal,
       'Horário: ' +
-        atendimento.horario +
-        '\nMotivo: ' +
-        atendimento.motivo +
-        '\nTutor: ' +
-        atendimento.tutor +
-        '\nUrgência: ' +
-        atendimento.urgencia
+      atendimento.horario +
+      '\nMotivo: ' +
+      atendimento.motivo +
+      '\nTutor: ' +
+      atendimento.tutor +
+      '\nUrgência: ' +
+      atendimento.urgencia
     );
   }
 
@@ -479,10 +479,20 @@ export default function DashboardScreen(
                 ]}
               >
                 <View style={styles.areaMarcaMenu}>
-                  <Image
-                    source={require('../../assets/Animed_Logo.png')}
-                    style={styles.logoMenuImagem}
-                  />
+                  <View
+                    style={[
+                      styles.logoMenuContainer,
+                      {
+                        backgroundColor: temaEscuro ? '#FFFFFF' : '#F2F6FA',
+                        borderColor: coresMenu.borda,
+                      },
+                    ]}
+                  >
+                    <Image
+                      source={require('../../assets/Animed_Logo.png')}
+                      style={styles.logoMenuImagem}
+                    />
+                  </View>
 
                   <Text style={[styles.nomeMenu, { color: coresMenu.texto }]}>
                     Animed
@@ -835,25 +845,25 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRightWidth: 1,
   },
-  drawerHeader: {
-    height: 66,
-    paddingLeft: 20,
-    paddingRight: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
-  },
   areaMarcaMenu: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  logoMenuImagem: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    resizeMode: 'cover',
+  logoMenuContainer: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 10,
+  },
+
+  logoMenuImagem: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
   },
   nomeMenu: {
     fontSize: 16,
@@ -870,6 +880,15 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingLeft: 16,
     paddingRight: 16,
+  },
+  drawerHeader: {
+    height: 66,
+    paddingLeft: 20,
+    paddingRight: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
   },
   itemDrawer: {
     height: 42,
