@@ -45,7 +45,7 @@ export default function ConfiguracoesScreen(
   const [totalRegistros, setTotalRegistros] = useState<number>(0);
 
   const cores = temaEscuro
-  ? {
+    ? {
       fundo: '#07111F',
       card: '#172232',
       campo: '#171A22',
@@ -57,7 +57,7 @@ export default function ConfiguracoesScreen(
       perigo: '#D62828',
       alerta: '#D99000',
     }
-  : {
+    : {
       fundo: '#F2F6FA',
       card: '#FFFFFF',
       campo: '#EAF2F7',
@@ -288,15 +288,17 @@ export default function ConfiguracoesScreen(
                 { color: cores.textoSecundario },
               ]}
             >
-              Alterna a aparência visual desta tela.
+              Alterna a aparência visual de todo o aplicativo.
             </Text>
           </View>
 
           <Switch
-            value={configuracoes.temaClaro}
-            onValueChange={(valor) =>
-              atualizarConfiguracao('temaClaro', valor)
-            }
+            value={!temaEscuro}
+            onValueChange={() => {
+              if (typeof props.alternarTema === 'function') {
+                props.alternarTema();
+              }
+            }}
             trackColor={{ false: '#31445F', true: '#008B7A' }}
             thumbColor="#FFFFFF"
           />
