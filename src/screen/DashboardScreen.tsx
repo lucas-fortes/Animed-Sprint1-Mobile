@@ -157,10 +157,10 @@ export default function DashboardScreen(
   }
 
   function abrirMenu(): void {
-  if (typeof props.onAbrirMenu === 'function') {
-    props.onAbrirMenu();
+    if (typeof props.onAbrirMenu === 'function') {
+      props.onAbrirMenu();
+    }
   }
-}
 
   function verTodosAtendimentos(): void {
     Alert.alert(

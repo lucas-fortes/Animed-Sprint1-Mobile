@@ -38,29 +38,29 @@ export default function CadastroScreen(props: any): React.ReactElement {
 
   const cores = temaEscuro
     ? {
-        fundo: '#07111F',
-        fundoCampo: '#171A22',
-        fundoModal: '#111820',
-        borda: '#23415A',
-        texto: '#FFFFFF',
-        textoSecundario: '#8A96A8',
-        destaque: '#008B7A',
-        destaqueBorda: '#00C2A8',
-        link: '#00C2FF',
-        overlay: 'rgba(0, 0, 0, 0.60)',
-      }
+      fundo: '#07111F',
+      fundoCampo: '#171A22',
+      fundoModal: '#111820',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueBorda: '#00C2A8',
+      link: '#00C2FF',
+      overlay: 'rgba(0, 0, 0, 0.60)',
+    }
     : {
-        fundo: '#F2F6FA',
-        fundoCampo: '#FFFFFF',
-        fundoModal: '#FFFFFF',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#6B7A8C',
-        destaque: '#008B7A',
-        destaqueBorda: '#00A693',
-        link: '#0077CC',
-        overlay: 'rgba(0, 0, 0, 0.35)',
-      };
+      fundo: '#F2F6FA',
+      fundoCampo: '#FFFFFF',
+      fundoModal: '#FFFFFF',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueBorda: '#00A693',
+      link: '#0077CC',
+      overlay: 'rgba(0, 0, 0, 0.35)',
+    };
 
   function formatarCpf(valor: string): string {
     const numeros = valor.replace(/\D/g, '').slice(0, 11);
@@ -325,9 +325,9 @@ export default function CadastroScreen(props: any): React.ReactElement {
               },
               tipoAcesso === 'CPF'
                 ? {
-                    backgroundColor: cores.destaque,
-                    borderColor: cores.destaqueBorda,
-                  }
+                  backgroundColor: cores.destaque,
+                  borderColor: cores.destaqueBorda,
+                }
                 : null,
             ]}
             underlayColor={cores.destaque}
@@ -352,9 +352,9 @@ export default function CadastroScreen(props: any): React.ReactElement {
               },
               tipoAcesso === 'CRMV'
                 ? {
-                    backgroundColor: cores.destaque,
-                    borderColor: cores.destaqueBorda,
-                  }
+                  backgroundColor: cores.destaque,
+                  borderColor: cores.destaqueBorda,
+                }
                 : null,
             ]}
             underlayColor={cores.destaque}
