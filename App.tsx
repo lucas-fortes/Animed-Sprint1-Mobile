@@ -19,7 +19,9 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-
+import LoginScreen from './src/screen/LoginScreen';
+import CadastroScreen from './src/screen/CadastroScreen';
+import RecuperarSenhaScreen from './src/screen/RecuperarSenhaScreen';
 import DashboardScreen from './src/screen/DashboardScreen';
 import RegistroClinicoScreen from './src/screen/RegistroClinicoScreen';
 import HistoricoClinicoScreen from './src/screen/HistoricoClinicoScreen';
@@ -32,44 +34,45 @@ const navigationRef = createNavigationContainerRef<any>();
 type AppTabsProps = {
   temaEscuro: boolean;
   alternarTema: () => void;
-};
+  onSair: () => void;
+};;
 
 function AppTabs(props: AppTabsProps): React.ReactElement {
   const [modalMenuVisivel, setModalMenuVisivel] = useState<boolean>(false);
 
   const coresTab = props.temaEscuro
     ? {
-        fundo: '#07111F',
-        borda: '#1C2B3A',
-        ativo: '#FFFFFF',
-        inativo: '#8A96A8',
-      }
+      fundo: '#07111F',
+      borda: '#1C2B3A',
+      ativo: '#FFFFFF',
+      inativo: '#8A96A8',
+    }
     : {
-        fundo: '#FFFFFF',
-        borda: '#B8C6D6',
-        ativo: '#008B7A',
-        inativo: '#6B7A8C',
-      };
+      fundo: '#FFFFFF',
+      borda: '#B8C6D6',
+      ativo: '#008B7A',
+      inativo: '#6B7A8C',
+    };
 
   const coresMenu = props.temaEscuro
     ? {
-        fundo: '#0B1526',
-        fundoItem: '#0B1526',
-        fundoAtivo: '#12384A',
-        borda: '#1D3147',
-        texto: '#FFFFFF',
-        textoSecundario: '#CBD5E1',
-        overlay: 'rgba(0, 0, 0, 0.55)',
-      }
+      fundo: '#0B1526',
+      fundoItem: '#0B1526',
+      fundoAtivo: '#12384A',
+      borda: '#1D3147',
+      texto: '#FFFFFF',
+      textoSecundario: '#CBD5E1',
+      overlay: 'rgba(0, 0, 0, 0.55)',
+    }
     : {
-        fundo: '#FFFFFF',
-        fundoItem: '#FFFFFF',
-        fundoAtivo: '#DDF7F3',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#516173',
-        overlay: 'rgba(0, 0, 0, 0.35)',
-      };
+      fundo: '#FFFFFF',
+      fundoItem: '#FFFFFF',
+      fundoAtivo: '#DDF7F3',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#516173',
+      overlay: 'rgba(0, 0, 0, 0.35)',
+    };
 
   function abrirMenu(): void {
     setModalMenuVisivel(true);
@@ -77,6 +80,10 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
 
   function fecharMenu(): void {
     setModalMenuVisivel(false);
+  }
+  function sairSistema(): void {
+    fecharMenu();
+    props.onSair();
   }
 
   function navegarPara(tela: string): void {
@@ -228,7 +235,7 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
         animationType="fade"
         onRequestClose={fecharMenu}
       >
-        <TouchableWithoutFeedback onPress={fecharMenu}>
+        <TouchableWithoutFeedback onPress={sairSistema}>
           <View
             style={[
               styles.drawerOverlay,
@@ -438,14 +445,64 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
   );
 }
 
+type TelaAutenticacao = 'login' | 'cadastro' | 'recuperarSenha';
+
 export default function App(): React.ReactElement {
   const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
+  const [usuarioLogado, setUsuarioLogado] = useState<boolean>(false);
+  const [telaAutenticacao, setTelaAutenticacao] =
+    useState<TelaAutenticacao>('login');
 
   function alternarTema(): void {
     setTemaEscuro((valorAnterior) => !valorAnterior);
   }
 
-  return <AppTabs temaEscuro={temaEscuro} alternarTema={alternarTema} />;
+  function entrarNoSistema(): void {
+    setUsuarioLogado(true);
+  }
+
+  function sairDoSistema(): void {
+    setUsuarioLogado(false);
+    setTelaAutenticacao('login');
+  }
+
+  function abrirCadastro(): void {
+    setTelaAutenticacao('cadastro');
+  }
+
+  function abrirRecuperarSenha(): void {
+    setTelaAutenticacao('recuperarSenha');
+  }
+
+  function voltarParaLogin(): void {
+    setTelaAutenticacao('login');
+  }
+
+  if (usuarioLogado === false) {
+    if (telaAutenticacao === 'cadastro') {
+      return <CadastroScreen onVoltarLogin={voltarParaLogin} />;
+    }
+
+    if (telaAutenticacao === 'recuperarSenha') {
+      return <RecuperarSenhaScreen onVoltarLogin={voltarParaLogin} />;
+    }
+
+    return (
+      <LoginScreen
+        onLogin={entrarNoSistema}
+        onCadastro={abrirCadastro}
+        onRecuperarSenha={abrirRecuperarSenha}
+      />
+    );
+  }
+
+  return (
+    <AppTabs
+      temaEscuro={temaEscuro}
+      alternarTema={alternarTema}
+      onSair={sairDoSistema}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
