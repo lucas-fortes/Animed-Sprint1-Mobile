@@ -450,11 +450,12 @@ export default function HistoricoClinicoScreen(
             },
           ]}
           placeholder="000.000.000-00"
-          placeholderTextColor={cores.textoSecundario}
-          value={cpfBusca}
-          onChangeText={alterarCpfBusca}
-          keyboardType="default"
-          maxLength={14}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         <Text style={[styles.label, { color: cores.texto }]}>
@@ -474,7 +475,12 @@ export default function HistoricoClinicoScreen(
           placeholderTextColor={cores.textoSecundario}
           value={dataBusca}
           onChangeText={alterarDataBusca}
-          keyboardType="default"
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
           maxLength={10}
         />
 

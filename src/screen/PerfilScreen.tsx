@@ -394,6 +394,12 @@ export default function PerfilScreen(
           value={perfil.nome}
           onChangeText={(valor) => alterarCampo('nome', valor)}
           editable={modoEdicao}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         <Text style={[styles.label, { color: cores.texto }]}>
@@ -466,7 +472,12 @@ export default function PerfilScreen(
           value={perfil.documento}
           onChangeText={alterarDocumento}
           editable={modoEdicao}
-          keyboardType="default"
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
           maxLength={perfil.tipoAcesso === 'CPF' ? 14 : 10}
         />
 
@@ -491,7 +502,12 @@ export default function PerfilScreen(
               onChangeText={(valor) =>
                 alterarCampo('ufCrmv', valor.toUpperCase().slice(0, 2))
               }
-              editable={modoEdicao}
+              editable={modoEdicao} keyboardType="visible-password"
+              showSoftInputOnFocus={true}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
               maxLength={2}
             />
           </>
@@ -515,7 +531,12 @@ export default function PerfilScreen(
           value={perfil.email}
           onChangeText={(valor) => alterarCampo('email', valor)}
           editable={modoEdicao}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
           autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         <Text style={[styles.label, { color: cores.texto }]}>
@@ -536,8 +557,12 @@ export default function PerfilScreen(
           value={perfil.telefone}
           onChangeText={alterarTelefone}
           editable={modoEdicao}
-          keyboardType="default"
-          maxLength={15}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false} maxLength={15}
         />
 
         <Text style={[styles.label, { color: cores.texto }]}>
@@ -557,6 +582,12 @@ export default function PerfilScreen(
           placeholderTextColor={cores.textoSecundario}
           value={perfil.clinica}
           onChangeText={(valor) => alterarCampo('clinica', valor)}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
           editable={modoEdicao}
         />
 
@@ -578,6 +609,12 @@ export default function PerfilScreen(
           value={perfil.especialidade}
           onChangeText={(valor) => alterarCampo('especialidade', valor)}
           editable={modoEdicao}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         {modoEdicao ? (

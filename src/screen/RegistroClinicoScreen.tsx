@@ -458,7 +458,12 @@ export default function RegistroClinicoScreen(
             placeholderTextColor={cores.textoSecundario}
             value={cpfTutor}
             onChangeText={alterarCpfTutor}
-            keyboardType="default"
+            keyboardType="visible-password"
+            showSoftInputOnFocus={true}
+            secureTextEntry={true}
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
             maxLength={14}
           />
 
@@ -524,7 +529,12 @@ export default function RegistroClinicoScreen(
               placeholderTextColor={cores.textoSecundario}
               value={telefoneNovoTutor}
               onChangeText={alterarTelefoneNovoTutor}
-              keyboardType="default"
+              keyboardType="visible-password"
+              showSoftInputOnFocus={true}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
               maxLength={15}
             />
 
@@ -598,6 +608,12 @@ export default function RegistroClinicoScreen(
           placeholderTextColor={cores.textoSecundario}
           value={nomeAnimal}
           onChangeText={setNomeAnimal}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         <Text style={[styles.label, { color: cores.texto }]}>Espécie</Text>
@@ -655,6 +671,12 @@ export default function RegistroClinicoScreen(
           placeholderTextColor={cores.textoSecundario}
           value={raca}
           onChangeText={setRaca}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         <View style={styles.linhaDoisCampos}>
@@ -676,7 +698,12 @@ export default function RegistroClinicoScreen(
               placeholderTextColor={cores.textoSecundario}
               value={idade}
               onChangeText={alterarIdade}
-              keyboardType="default"
+              keyboardType="visible-password"
+              showSoftInputOnFocus={true}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
               maxLength={3}
             />
           </View>
@@ -699,7 +726,12 @@ export default function RegistroClinicoScreen(
               placeholderTextColor={cores.textoSecundario}
               value={peso}
               onChangeText={alterarPeso}
-              keyboardType="default"
+              keyboardType="visible-password"
+              showSoftInputOnFocus={true}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
               maxLength={6}
             />
           </View>
@@ -761,7 +793,12 @@ export default function RegistroClinicoScreen(
           placeholderTextColor={cores.textoSecundario}
           value={dataRetorno}
           onChangeText={alterarDataRetorno}
-          keyboardType="default"
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
           maxLength={10}
         />
 
@@ -782,6 +819,12 @@ export default function RegistroClinicoScreen(
           placeholderTextColor={cores.textoSecundario}
           value={observacoes}
           onChangeText={setObservacoes}
+          keyboardType="visible-password"
+          showSoftInputOnFocus={true}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
           multiline={true}
           numberOfLines={5}
           textAlignVertical="top"
