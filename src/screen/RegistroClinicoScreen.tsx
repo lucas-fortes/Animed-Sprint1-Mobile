@@ -41,8 +41,10 @@ const TUTORES: Tutor[] = [
 ];
 
 export default function RegistroClinicoScreen(): React.ReactElement {
-  const [cpfTutor, setCpfTutor] = useState<string>('');
-  const [tutorSelecionado, setTutorSelecionado] = useState<Tutor | null>(null);
+  const [cadastroTutorVisivel, setCadastroTutorVisivel] =
+    useState<boolean>(false);
+  const [nomeNovoTutor, setNomeNovoTutor] = useState<string>('');
+  const [telefoneNovoTutor, setTelefoneNovoTutor] = useState<string>('');
 
   const [nomeAnimal, setNomeAnimal] = useState<string>('');
   const [especie, setEspecie] = useState<string>('Canina');
@@ -99,47 +101,86 @@ export default function RegistroClinicoScreen(): React.ReactElement {
   }
 
   function alterarCpfTutor(valor: string): void {
-    const contemCaracterInvalido = /[^0-9.-]/.test(valor);
+  const contemCaracterInvalido = /[^0-9.-]/.test(valor);
 
-    if (contemCaracterInvalido) {
-      Alert.alert(
-        'Atenção',
-        'Digite somente números no formato 000.000.000-00.'
-      );
-    }
-
-    setCpfTutor(formatarCpf(valor));
-    setTutorSelecionado(null);
+  if (contemCaracterInvalido) {
+    Alert.alert(
+      'Atenção',
+      'Digite somente números no formato 000.000.000-00.'
+    );
   }
+
+  setCpfTutor(formatarCpf(valor));
+  setTutorSelecionado(null);
+  setCadastroTutorVisivel(false);
+  setNomeNovoTutor('');
+  setTelefoneNovoTutor('');
+}
 
   function buscarTutor(): void {
-    const cpfNumerico = cpfTutor.replace(/\D/g, '');
+  const cpfNumerico = cpfTutor.replace(/\D/g, '');
 
-    if (cpfNumerico.length !== 11) {
-      Alert.alert('Atenção', 'Digite um CPF válido para pesquisar o tutor.');
-      return;
-    }
+  if (cpfNumerico.length !== 11) {
+    Alert.alert('Atenção', 'Digite um CPF válido para pesquisar o tutor.');
+    return;
+  }
 
-    const tutorEncontrado = TUTORES.find(
-      (tutor) => tutor.cpf.replace(/\D/g, '') === cpfNumerico
-    );
+  const tutorEncontrado = TUTORES.find(
+    (tutor) => tutor.cpf.replace(/\D/g, '') === cpfNumerico
+  );
 
-    if (tutorEncontrado === undefined) {
-      Alert.alert(
-        'Tutor não encontrado',
-        'Nenhum tutor foi encontrado com o CPF informado.'
-      );
-      setTutorSelecionado(null);
-      return;
-    }
-
-    setTutorSelecionado(tutorEncontrado);
+  if (tutorEncontrado === undefined) {
+    setTutorSelecionado(null);
+    setCadastroTutorVisivel(true);
 
     Alert.alert(
-      'Tutor encontrado',
-      tutorEncontrado.nome + ' foi vinculado ao registro clínico.'
+      'Tutor não encontrado',
+      'Nenhum tutor foi encontrado com esse CPF. Cadastre o tutor para continuar.'
     );
+
+    return;
   }
+
+  setTutorSelecionado(tutorEncontrado);
+  setCadastroTutorVisivel(false);
+  setNomeNovoTutor('');
+  setTelefoneNovoTutor('');
+
+  Alert.alert(
+    'Tutor encontrado',
+    tutorEncontrado.nome + ' foi vinculado ao registro clínico.'
+  );
+}
+function vincularNovoTutor(): void {
+  if (cpfTutor.replace(/\D/g, '').length !== 11) {
+    Alert.alert('Atenção', 'Digite um CPF válido antes de cadastrar o tutor.');
+    return;
+  }
+
+  if (nomeNovoTutor.trim() === '') {
+    Alert.alert('Atenção', 'Informe o nome do tutor.');
+    return;
+  }
+
+  if (telefoneNovoTutor.trim() === '') {
+    Alert.alert('Atenção', 'Informe o telefone do tutor.');
+    return;
+  }
+
+  const novoTutor: Tutor = {
+    cpf: cpfTutor,
+    nome: nomeNovoTutor.trim(),
+    telefone: telefoneNovoTutor.trim(),
+  };
+
+  setTutorSelecionado(novoTutor);
+  setCadastroTutorVisivel(false);
+
+  Alert.alert(
+    'Tutor cadastrado',
+    novoTutor.nome + ' foi cadastrado e vinculado ao registro clínico.'
+  );
+}
 
   function alterarIdade(valor: string): void {
     const contemCaracterInvalido = /\D/.test(valor);
@@ -284,17 +325,20 @@ export default function RegistroClinicoScreen(): React.ReactElement {
   }
 
   function limparFormulario(): void {
-    setCpfTutor('');
-    setTutorSelecionado(null);
-    setNomeAnimal('');
-    setEspecie('Canina');
-    setRaca('');
-    setIdade('');
-    setPeso('');
-    setUrgencia('Baixa');
-    setDataRetorno('');
-    setObservacoes('');
-  }
+  setCpfTutor('');
+  setTutorSelecionado(null);
+  setCadastroTutorVisivel(false);
+  setNomeNovoTutor('');
+  setTelefoneNovoTutor('');
+  setNomeAnimal('');
+  setEspecie('Canina');
+  setRaca('');
+  setIdade('');
+  setPeso('');
+  setUrgencia('Baixa');
+  setDataRetorno('');
+  setObservacoes('');
+}
 
   function corUrgencia(valor: string): string {
     if (valor === 'Alta') {
@@ -339,8 +383,134 @@ export default function RegistroClinicoScreen(): React.ReactElement {
         ]}
       >
         <Text style={[styles.tituloSecao, { color: cores.texto }]}>
-          Dados do Tutor
-        </Text>
+  Dados do Tutor
+</Text>
+
+<Text style={[styles.label, { color: cores.texto }]}>
+  CPF do tutor
+</Text>
+
+<View style={styles.linhaBusca}>
+  <TextInput
+    style={[
+      styles.inputBusca,
+      {
+        backgroundColor: cores.campo,
+        borderColor: cores.borda,
+        color: cores.texto,
+      },
+    ]}
+    placeholder="000.000.000-00"
+    placeholderTextColor={cores.textoSecundario}
+    value={cpfTutor}
+    onChangeText={alterarCpfTutor}
+    keyboardType="default"
+    maxLength={14}
+  />
+
+  <TouchableHighlight
+    style={[
+      styles.botaoBuscar,
+      { backgroundColor: cores.destaque },
+    ]}
+    underlayColor="#006F62"
+    onPress={buscarTutor}
+  >
+    <Text style={styles.textoBotaoBuscar}>🔎</Text>
+  </TouchableHighlight>
+</View>
+
+{cadastroTutorVisivel === true ? (
+  <View
+    style={[
+      styles.cardCadastroTutor,
+      {
+        backgroundColor: cores.campo,
+        borderColor: cores.borda,
+      },
+    ]}
+  >
+    <Text style={[styles.tituloCadastroTutor, { color: cores.texto }]}>
+      Cadastrar novo tutor
+    </Text>
+
+    <Text style={[styles.label, { color: cores.texto }]}>
+      Nome do tutor
+    </Text>
+
+    <TextInput
+      style={[
+        styles.input,
+        {
+          backgroundColor: cores.fundo,
+          borderColor: cores.borda,
+          color: cores.texto,
+        },
+      ]}
+      placeholder="Ex: João Silva"
+      placeholderTextColor={cores.textoSecundario}
+      value={nomeNovoTutor}
+      onChangeText={setNomeNovoTutor}
+    />
+
+    <Text style={[styles.label, { color: cores.texto }]}>
+      Telefone
+    </Text>
+
+    <TextInput
+      style={[
+        styles.input,
+        {
+          backgroundColor: cores.fundo,
+          borderColor: cores.borda,
+          color: cores.texto,
+        },
+      ]}
+      placeholder="(11) 99999-9999"
+      placeholderTextColor={cores.textoSecundario}
+      value={telefoneNovoTutor}
+      onChangeText={setTelefoneNovoTutor}
+      keyboardType="default"
+    />
+
+    <TouchableHighlight
+      style={[
+        styles.botaoVincularTutor,
+        { backgroundColor: cores.destaque },
+      ]}
+      underlayColor="#006F62"
+      onPress={vincularNovoTutor}
+    >
+      <Text style={styles.textoBotaoVincularTutor}>
+        Cadastrar e vincular tutor
+      </Text>
+    </TouchableHighlight>
+  </View>
+) : null}
+
+{tutorSelecionado !== null ? (
+  <View
+    style={[
+      styles.cardTutor,
+      {
+        backgroundColor: cores.campo,
+        borderColor: cores.destaqueClaro,
+      },
+    ]}
+  >
+    <Text style={[styles.nomeTutor, { color: cores.texto }]}>
+      {tutorSelecionado.nome}
+    </Text>
+
+    <Text style={[styles.infoTutor, { color: cores.textoSecundario }]}>
+      CPF: {tutorSelecionado.cpf}
+    </Text>
+
+    <Text style={[styles.infoTutor, { color: cores.textoSecundario }]}>
+      Telefone: {tutorSelecionado.telefone}
+    </Text>
+  </View>
+) : null}
 
         <Text style={[styles.label, { color: cores.texto }]}>
           CPF do tutor
@@ -700,6 +870,29 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 14,
   },
+  cardCadastroTutor: {
+  borderWidth: 1,
+  borderRadius: 14,
+  padding: 14,
+  marginTop: 14,
+},
+tituloCadastroTutor: {
+  fontSize: 15,
+  fontWeight: 'bold',
+  marginBottom: 8,
+},
+botaoVincularTutor: {
+  height: 48,
+  borderRadius: 14,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: 10,
+},
+textoBotaoVincularTutor: {
+  color: '#FFFFFF',
+  fontSize: 14,
+  fontWeight: 'bold',
+},
   nomeTutor: {
     fontSize: 16,
     fontWeight: 'bold',

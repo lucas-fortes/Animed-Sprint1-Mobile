@@ -150,13 +150,13 @@ export default function LoginScreen(props: any): React.ReactElement {
     return true;
   }
 
- function entrar(): void {
-  if (validarLogin() === false) {
-    return;
-  }
+  function entrar(): void {
+    if (validarLogin() === false) {
+      return;
+    }
 
-  props.onLogin();
-}
+    props.onLogin();
+  }
 
   function abrirCadastro(): void {
     if (props.onCadastro !== undefined) {
