@@ -164,12 +164,22 @@ export default function LoginScreen(props: any): React.ReactElement {
   }
 
   function abrirCadastro(): void {
-    props.onCadastro();
+    if (props.onCadastro !== undefined) {
+      props.onCadastro();
+    } else {
+      Alert.alert('Erro', 'A navegação para cadastro não foi configurada no App.tsx.');
+    }
   }
 
   function abrirRecuperarSenha(): void {
-    props.onRecuperarSenha();
+    if (props.onRecuperarSenha !== undefined) {
+      props.onRecuperarSenha();
+    } else {
+      Alert.alert('Erro', 'A navegação para recuperação de senha não foi configurada no App.tsx.');
+    }
   }
+
+
 
   return (
     <KeyboardAvoidingView

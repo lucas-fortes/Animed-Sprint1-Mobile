@@ -91,6 +91,7 @@ export default function App(): React.ReactElement {
     return (
       <CadastroScreen
         onVoltarLogin={() => setTelaAuth('login')}
+        onRecuperarSenha={() => setTelaAuth('recuperarSenha')}
       />
     );
   }
@@ -99,6 +100,7 @@ export default function App(): React.ReactElement {
     return (
       <RecuperarSenhaScreen
         onVoltarLogin={() => setTelaAuth('login')}
+        onCadastro={() => setTelaAuth('cadastro')}
       />
     );
   }
