@@ -4,6 +4,7 @@ import {
     Image,
     KeyboardAvoidingView,
     Modal,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -235,7 +236,7 @@ export default function RecuperarSenhaScreen(props: any): React.ReactElement {
     return (
         <KeyboardAvoidingView
             style={styles.keyboardContainer}
-            behavior="height"
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
             <ScrollView
                 contentContainerStyle={[
@@ -243,6 +244,7 @@ export default function RecuperarSenhaScreen(props: any): React.ReactElement {
                     { backgroundColor: cores.fundo },
                 ]}
                 keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
             >
                 <TouchableHighlight
                     style={[
@@ -660,9 +662,9 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingRight: 24,
     paddingTop: 88,
-    paddingBottom: 120,
+    paddingBottom: 80,
     justifyContent: 'center',
-  },
+},
   botaoTema: {
     position: 'absolute',
     top: 50,
