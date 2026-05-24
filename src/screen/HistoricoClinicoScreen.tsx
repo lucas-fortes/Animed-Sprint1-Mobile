@@ -18,7 +18,14 @@ import { RegistroClinico } from '../model/RegistroClinico';
 
 const CHAVE_REGISTROS = '@animed:registrosClinicos';
 
-export default function HistoricoClinicoScreen(): React.ReactElement {
+type HistoricoClinicoScreenProps = {
+  temaEscuro?: boolean;
+};
+
+export default function HistoricoClinicoScreen(
+  props: HistoricoClinicoScreenProps
+): React.ReactElement {
+  const temaEscuro = props.temaEscuro ?? true;
   const [registrosHistorico, setRegistrosHistorico] = useState<RegistroClinico[]>(
     []
   );
@@ -26,19 +33,33 @@ export default function HistoricoClinicoScreen(): React.ReactElement {
   const [cpfBusca, setCpfBusca] = useState<string>('');
   const [dataBusca, setDataBusca] = useState<string>('');
 
-  const cores = {
-    fundo: '#07111F',
-    card: '#172232',
-    campo: '#171A22',
-    borda: '#23415A',
-    texto: '#FFFFFF',
-    textoSecundario: '#8A96A8',
-    destaque: '#008B7A',
-    destaqueClaro: '#00C2A8',
-    perigo: '#D62828',
-    alerta: '#D99000',
-    baixo: '#00A693',
-  };
+  const cores = temaEscuro
+    ? {
+      fundo: '#07111F',
+      card: '#172232',
+      campo: '#171A22',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueClaro: '#00C2A8',
+      perigo: '#D62828',
+      alerta: '#D99000',
+      baixo: '#00A693',
+    }
+    : {
+      fundo: '#F2F6FA',
+      card: '#FFFFFF',
+      campo: '#EAF2F7',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueClaro: '#00A693',
+      perigo: '#C62828',
+      alerta: '#B87500',
+      baixo: '#008B7A',
+    };
 
   function obterDataHoje(): string {
     const hoje = new Date();
@@ -584,7 +605,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 58,
+    paddingTop: 24,
     paddingBottom: 120,
   },
   titulo: {

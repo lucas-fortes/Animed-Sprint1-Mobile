@@ -39,8 +39,14 @@ const TUTORES: Tutor[] = [
     telefone: '(11) 99999-3000',
   },
 ];
+type RegistroClinicoScreenProps = {
+  temaEscuro?: boolean;
+};
 
-export default function RegistroClinicoScreen(): React.ReactElement {
+export default function RegistroClinicoScreen(
+  props: RegistroClinicoScreenProps
+): React.ReactElement {
+  const temaEscuro = props.temaEscuro ?? true;
   const [cpfTutor, setCpfTutor] = useState<string>('');
   const [tutorSelecionado, setTutorSelecionado] = useState<Tutor | null>(null);
 
@@ -58,18 +64,31 @@ export default function RegistroClinicoScreen(): React.ReactElement {
   const [dataRetorno, setDataRetorno] = useState<string>('');
   const [observacoes, setObservacoes] = useState<string>('');
 
-  const cores = {
-    fundo: '#07111F',
-    card: '#172232',
-    campo: '#171A22',
-    borda: '#23415A',
-    texto: '#FFFFFF',
-    textoSecundario: '#8A96A8',
-    destaque: '#008B7A',
-    destaqueClaro: '#00C2A8',
-    perigo: '#D62828',
-    alerta: '#D99000',
-  };
+  const cores = temaEscuro
+    ? {
+      fundo: '#07111F',
+      card: '#172232',
+      campo: '#171A22',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueClaro: '#00C2A8',
+      perigo: '#D62828',
+      alerta: '#D99000',
+    }
+    : {
+      fundo: '#F2F6FA',
+      card: '#FFFFFF',
+      campo: '#EAF2F7',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueClaro: '#00A693',
+      perigo: '#C62828',
+      alerta: '#B87500',
+    };
 
   function formatarCpf(valor: string): string {
     const numeros = valor.replace(/\D/g, '').slice(0, 11);
@@ -253,10 +272,10 @@ export default function RegistroClinicoScreen(): React.ReactElement {
 
     setDataRetorno(
       numeros.slice(0, 2) +
-        '/' +
-        numeros.slice(2, 4) +
-        '/' +
-        numeros.slice(4, 8)
+      '/' +
+      numeros.slice(2, 4) +
+      '/' +
+      numeros.slice(4, 8)
     );
   }
 
@@ -341,13 +360,13 @@ export default function RegistroClinicoScreen(): React.ReactElement {
       Alert.alert(
         'Registro Clínico',
         'Registro salvo com sucesso.\n\nAnimal: ' +
-          nomeAnimal +
-          '\nTutor: ' +
-          tutorSelecionado?.nome +
-          '\nUrgência: ' +
-          urgencia +
-          '\nRetorno: ' +
-          dataRetorno
+        nomeAnimal +
+        '\nTutor: ' +
+        tutorSelecionado?.nome +
+        '\nUrgência: ' +
+        urgencia +
+        '\nRetorno: ' +
+        dataRetorno
       );
 
       limparFormulario();
@@ -785,7 +804,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 58,
+    paddingTop: 24,
     paddingBottom: 120,
   },
   titulo: {

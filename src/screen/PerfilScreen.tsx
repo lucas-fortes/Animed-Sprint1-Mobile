@@ -6,7 +6,6 @@ import {
   Alert,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   TouchableHighlight,
@@ -37,34 +36,43 @@ const PERFIL_PADRAO: PerfilUsuario = {
   especialidade: 'Clínica geral veterinária',
 };
 
-export default function PerfilScreen(): React.ReactElement {
+type PerfilScreenProps = {
+  temaEscuro?: boolean;
+};
+
+export default function PerfilScreen(
+  props: PerfilScreenProps
+): React.ReactElement {
+  const temaEscuro = props.temaEscuro ?? true;
+
   const [perfil, setPerfil] = useState<PerfilUsuario>(PERFIL_PADRAO);
   const [modoEdicao, setModoEdicao] = useState<boolean>(false);
-  const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
 
   const cores = temaEscuro
     ? {
-        fundo: '#07111F',
-        card: '#172232',
-        campo: '#171A22',
-        borda: '#23415A',
-        texto: '#FFFFFF',
-        textoSecundario: '#8A96A8',
-        destaque: '#008B7A',
-        destaqueClaro: '#00C2A8',
-        perigo: '#D62828',
-      }
+      fundo: '#07111F',
+      card: '#172232',
+      campo: '#171A22',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueClaro: '#00C2A8',
+      perigo: '#D62828',
+      alerta: '#D99000',
+    }
     : {
-        fundo: '#F2F6FA',
-        card: '#FFFFFF',
-        campo: '#EAF2F7',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#6B7A8C',
-        destaque: '#008B7A',
-        destaqueClaro: '#00A693',
-        perigo: '#C62828',
-      };
+      fundo: '#F2F6FA',
+      card: '#FFFFFF',
+      campo: '#EAF2F7',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueClaro: '#00A693',
+      perigo: '#C62828',
+      alerta: '#B87500',
+    };
 
   useEffect(() => {
     carregarPerfil();
@@ -248,10 +256,6 @@ export default function PerfilScreen(): React.ReactElement {
     alterarCampo('telefone', formatarTelefone(valor));
   }
 
-  function alternarTema(): void {
-    setTemaEscuro(!temaEscuro);
-  }
-
   function iniciaisNome(nome: string): string {
     const partes = nome.trim().split(' ');
 
@@ -272,30 +276,14 @@ export default function PerfilScreen(): React.ReactElement {
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.topo}>
-        <View>
-          <Text style={[styles.titulo, { color: cores.texto }]}>
-            Perfil
-          </Text>
+        <Text style={[styles.titulo, { color: cores.texto }]}>
+          Perfil
+        </Text>
 
-          <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
-            Dados do profissional logado.
-          </Text>
-        </View>
-
-        <View style={styles.areaTema}>
-          <Text style={[styles.textoTema, { color: cores.textoSecundario }]}>
-            Tema claro
-          </Text>
-
-          <Switch
-            value={!temaEscuro}
-            onValueChange={alternarTema}
-            trackColor={{ false: '#31445F', true: '#008B7A' }}
-            thumbColor="#FFFFFF"
-          />
-        </View>
+        <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
+          Dados do profissional logado.
+        </Text>
       </View>
-
       <View
         style={[
           styles.cardPerfil,
@@ -618,7 +606,7 @@ export default function PerfilScreen(): React.ReactElement {
           </Text>
         </TouchableHighlight>
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 }
 
@@ -641,14 +629,6 @@ const styles = StyleSheet.create({
   subtitulo: {
     fontSize: 14,
     marginBottom: 14,
-  },
-  areaTema: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  textoTema: {
-    fontSize: 13,
   },
   cardPerfil: {
     width: '100%',

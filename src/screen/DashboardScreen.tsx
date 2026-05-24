@@ -9,13 +9,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import {
   Alert,
   Image,
-  Modal,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TouchableHighlight,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
@@ -32,8 +29,8 @@ type Atendimento = {
 
 type DashboardProps = {
   temaEscuro?: boolean;
-  onAbrirMenu?: () => void;
   alternarTema?: () => void;
+  onAbrirMenu?: () => void;
   onAbrirPerfil?: () => void;
   onAbrirHistorico?: () => void;
   onAbrirConfiguracoes?: () => void;
@@ -44,7 +41,6 @@ const CHAVE_REGISTROS = '@animed:registrosClinicos';
 export default function DashboardScreen(
   props: DashboardProps
 ): React.ReactElement {
-  const [modalMenuVisivel, setModalMenuVisivel] = useState<boolean>(false);
   const [atendimentosDia, setAtendimentosDia] = useState<Atendimento[]>([]);
 
   const temaEscuro = props.temaEscuro ?? true;
@@ -163,52 +159,8 @@ export default function DashboardScreen(
   function abrirMenu(): void {
   if (typeof props.onAbrirMenu === 'function') {
     props.onAbrirMenu();
-    return;
-  }
-
-    setModalMenuVisivel(true);
-  }
-
-  function fecharMenu(): void {
-    setModalMenuVisivel(false);
-  }
-
-  function acessarInicio(): void {
-    fecharMenu();
-  }
-
-  function acessarPerfil(): void {
-  fecharMenu();
-
-  if (typeof props.onAbrirPerfil === 'function') {
-    props.onAbrirPerfil();
   }
 }
-
-function acessarHistorico(): void {
-  fecharMenu();
-
-  if (typeof props.onAbrirHistorico === 'function') {
-    props.onAbrirHistorico();
-  }
-}
-
-function acessarConfiguracoes(): void {
-  fecharMenu();
-
-  if (typeof props.onAbrirConfiguracoes === 'function') {
-    props.onAbrirConfiguracoes();
-  }
-}
-
-  function sairSistema(): void {
-    fecharMenu();
-
-    Alert.alert(
-      'Sair',
-      'A função de logout será implementada com autenticação.'
-    );
-  }
 
   function verTodosAtendimentos(): void {
     Alert.alert(
@@ -460,209 +412,6 @@ function acessarConfiguracoes(): void {
           </TouchableHighlight>
         ))
       )}
-
-      <Modal
-        visible={modalMenuVisivel}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={fecharMenu}
-      >
-        <TouchableWithoutFeedback onPress={fecharMenu}>
-          <View
-            style={[
-              styles.drawerOverlay,
-              { backgroundColor: coresMenu.overlay },
-            ]}
-          >
-            <View
-              style={[
-                styles.drawerContainer,
-                {
-                  backgroundColor: coresMenu.fundo,
-                  borderRightColor: coresMenu.borda,
-                },
-              ]}
-              onStartShouldSetResponder={() => true}
-            >
-              <View
-                style={[
-                  styles.drawerHeader,
-                  { borderBottomColor: coresMenu.borda },
-                ]}
-              >
-                <View style={styles.areaMarcaMenu}>
-                  <View
-                    style={[
-                      styles.logoMenuContainer,
-                      {
-                        backgroundColor: temaEscuro ? '#FFFFFF' : '#F2F6FA',
-                        borderColor: coresMenu.borda,
-                      },
-                    ]}
-                  >
-                    <Image
-                      source={require('../../assets/Animed_Logo.png')}
-                      style={styles.logoMenuImagem}
-                    />
-                  </View>
-
-                  <Text style={[styles.nomeMenu, { color: coresMenu.texto }]}>
-                    Animed
-                  </Text>
-                </View>
-
-                <TouchableHighlight
-                  style={styles.botaoFecharMenu}
-                  underlayColor={coresMenu.fundoAtivo}
-                  onPress={fecharMenu}
-                >
-                  <Feather
-                    name="x"
-                    size={20}
-                    color={coresMenu.textoSecundario}
-                  />
-                </TouchableHighlight>
-              </View>
-
-              <View style={styles.drawerItens}>
-                <TouchableHighlight
-                  style={[
-                    styles.itemDrawer,
-                    { backgroundColor: coresMenu.fundoAtivo },
-                  ]}
-                  underlayColor={coresMenu.fundoAtivo}
-                  onPress={acessarInicio}
-                >
-                  <View style={styles.conteudoItemDrawer}>
-                    <Ionicons
-                      name="home-outline"
-                      size={18}
-                      color="#00C2A8"
-                      style={styles.iconeDrawer}
-                    />
-
-                    <Text style={[styles.textoDrawer, styles.textoAtivoDrawer]}>
-                      Início
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={[
-                    styles.itemDrawer,
-                    { backgroundColor: coresMenu.fundoItem },
-                  ]}
-                  underlayColor={coresMenu.fundoAtivo}
-                  onPress={acessarPerfil}
-                >
-                  <View style={styles.conteudoItemDrawer}>
-                    <Ionicons
-                      name="person-outline"
-                      size={18}
-                      color={coresMenu.textoSecundario}
-                      style={styles.iconeDrawer}
-                    />
-
-                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
-                      Perfil
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={[
-                    styles.itemDrawer,
-                    { backgroundColor: coresMenu.fundoItem },
-                  ]}
-                  underlayColor={coresMenu.fundoAtivo}
-                  onPress={acessarHistorico}
-                >
-                  <View style={styles.conteudoItemDrawer}>
-                    <Ionicons
-                      name="time-outline"
-                      size={18}
-                      color={coresMenu.textoSecundario}
-                      style={styles.iconeDrawer}
-                    />
-
-                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
-                      Histórico
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={[
-                    styles.itemDrawer,
-                    { backgroundColor: coresMenu.fundoItem },
-                  ]}
-                  underlayColor={coresMenu.fundoAtivo}
-                  onPress={acessarConfiguracoes}
-                >
-                  <View style={styles.conteudoItemDrawer}>
-                    <Ionicons
-                      name="settings-outline"
-                      size={18}
-                      color={coresMenu.textoSecundario}
-                      style={styles.iconeDrawer}
-                    />
-
-                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
-                      Configurações
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-              </View>
-
-              <View
-                style={[
-                  styles.drawerRodape,
-                  { borderTopColor: coresMenu.borda },
-                ]}
-              >
-                <View style={styles.linhaTemaMenu}>
-                  <View style={styles.conteudoItemDrawer}>
-                    <Feather
-                      name="sun"
-                      size={17}
-                      color={coresMenu.textoSecundario}
-                      style={styles.iconeDrawer}
-                    />
-
-                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
-                      Tema Claro
-                    </Text>
-                  </View>
-
-                  <Switch
-                    value={!temaEscuro}
-                    onValueChange={alternarTema}
-                    trackColor={{ false: '#31445F', true: '#008B7A' }}
-                    thumbColor="#FFFFFF"
-                  />
-                </View>
-
-                <TouchableHighlight
-                  style={styles.itemSair}
-                  underlayColor={temaEscuro ? '#27151A' : '#FCE8EA'}
-                  onPress={sairSistema}
-                >
-                  <View style={styles.conteudoItemDrawer}>
-                    <MaterialCommunityIcons
-                      name="logout"
-                      size={18}
-                      color="#FF5A6A"
-                      style={styles.iconeDrawer}
-                    />
-
-                    <Text style={styles.textoSair}>Sair</Text>
-                  </View>
-                </TouchableHighlight>
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
     </ScrollView>
   );
 }

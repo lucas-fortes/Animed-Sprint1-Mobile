@@ -30,35 +30,45 @@ const CONFIGURACOES_PADRAO: ConfiguracoesApp = {
   atualizadoEm: new Date().toISOString(),
 };
 
-export default function ConfiguracoesScreen(): React.ReactElement {
+type ConfiguracoesScreenProps = {
+  temaEscuro?: boolean;
+  alternarTema?: () => void;
+};
+
+export default function ConfiguracoesScreen(
+  props: ConfiguracoesScreenProps
+): React.ReactElement {
+  const temaEscuro = props.temaEscuro ?? true;
   const [configuracoes, setConfiguracoes] =
     useState<ConfiguracoesApp>(CONFIGURACOES_PADRAO);
 
   const [totalRegistros, setTotalRegistros] = useState<number>(0);
 
-  const cores = configuracoes.temaClaro
-    ? {
-        fundo: '#F2F6FA',
-        card: '#FFFFFF',
-        campo: '#EAF2F7',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#6B7A8C',
-        destaque: '#008B7A',
-        destaqueClaro: '#00A693',
-        perigo: '#C62828',
-      }
-    : {
-        fundo: '#07111F',
-        card: '#172232',
-        campo: '#171A22',
-        borda: '#23415A',
-        texto: '#FFFFFF',
-        textoSecundario: '#8A96A8',
-        destaque: '#008B7A',
-        destaqueClaro: '#00C2A8',
-        perigo: '#D62828',
-      };
+  const cores = temaEscuro
+  ? {
+      fundo: '#07111F',
+      card: '#172232',
+      campo: '#171A22',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueClaro: '#00C2A8',
+      perigo: '#D62828',
+      alerta: '#D99000',
+    }
+  : {
+      fundo: '#F2F6FA',
+      card: '#FFFFFF',
+      campo: '#EAF2F7',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueClaro: '#00A693',
+      perigo: '#C62828',
+      alerta: '#B87500',
+    };
 
   useEffect(() => {
     carregarConfiguracoes();
