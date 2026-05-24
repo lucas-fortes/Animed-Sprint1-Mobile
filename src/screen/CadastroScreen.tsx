@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
   Modal,
   ScrollView,
   StyleSheet,
@@ -255,113 +256,231 @@ export default function CadastroScreen(props: any): React.ReactElement {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        { backgroundColor: cores.fundo },
-      ]}
+    <KeyboardAvoidingView
+      style={styles.keyboardContainer}
+      behavior="height"
     >
-      <TouchableHighlight
-        style={[
-          styles.botaoTema,
-          {
-            backgroundColor: temaEscuro ? '#0E1726' : '#EAF2F7',
-            borderColor: temaEscuro ? '#1E3A4F' : '#B8C6D6',
-          },
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          { backgroundColor: cores.fundo },
         ]}
-        underlayColor={cores.destaque}
-        onPress={alternarTema}
+        keyboardShouldPersistTaps="handled"
       >
-        <Text
-          style={[
-            styles.iconeTema,
-            { color: temaEscuro ? '#00C2A8' : '#008B7A' },
-          ]}
-        >
-          {temaEscuro ? '☾' : '☀'}
-        </Text>
-      </TouchableHighlight>
-
-      <View style={styles.areaLogo}>
-        <Image
-          source={require('../../assets/Animed_Logo.png')}
-          style={styles.logo}
-        />
-
-        <Text style={[styles.nomeApp, { color: cores.texto }]}>
-          Cadastre-se
-        </Text>
-
-        <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
-          Crie sua conta profissional
-        </Text>
-      </View>
-
-      <Text style={[styles.label, { color: cores.texto }]}>
-        Tipo de cadastro
-      </Text>
-
-      <View style={styles.linhaTipos}>
         <TouchableHighlight
           style={[
-            styles.botaoTipo,
+            styles.botaoTema,
             {
-              backgroundColor: cores.fundoCampo,
-              borderColor: cores.borda,
+              backgroundColor: temaEscuro ? '#0E1726' : '#EAF2F7',
+              borderColor: temaEscuro ? '#1E3A4F' : '#B8C6D6',
             },
-            tipoAcesso === 'CPF'
-              ? {
-                  backgroundColor: cores.destaque,
-                  borderColor: cores.destaqueBorda,
-                }
-              : null,
           ]}
           underlayColor={cores.destaque}
-          onPress={() => alterarTipoAcesso('CPF')}
+          onPress={alternarTema}
         >
           <Text
             style={[
-              styles.textoBotaoTipo,
-              { color: tipoAcesso === 'CPF' ? '#FFFFFF' : cores.texto },
+              styles.iconeTema,
+              { color: temaEscuro ? '#00C2A8' : '#008B7A' },
             ]}
           >
-            CPF
+            {temaEscuro ? '☾' : '☀'}
           </Text>
         </TouchableHighlight>
 
-        <TouchableHighlight
-          style={[
-            styles.botaoTipo,
-            {
-              backgroundColor: cores.fundoCampo,
-              borderColor: cores.borda,
-            },
-            tipoAcesso === 'CRMV'
-              ? {
-                  backgroundColor: cores.destaque,
-                  borderColor: cores.destaqueBorda,
-                }
-              : null,
-          ]}
-          underlayColor={cores.destaque}
-          onPress={() => alterarTipoAcesso('CRMV')}
-        >
-          <Text
+        <View style={styles.areaLogo}>
+          <Image
+            source={require('../../assets/Animed_Logo.png')}
+            style={styles.logo}
+          />
+
+          <Text style={[styles.nomeApp, { color: cores.texto }]}>
+            Cadastre-se
+          </Text>
+
+          <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
+            Crie sua conta profissional
+          </Text>
+        </View>
+
+        <Text style={[styles.label, { color: cores.texto }]}>
+          Tipo de cadastro
+        </Text>
+
+        <View style={styles.linhaTipos}>
+          <TouchableHighlight
             style={[
-              styles.textoBotaoTipo,
-              { color: tipoAcesso === 'CRMV' ? '#FFFFFF' : cores.texto },
+              styles.botaoTipo,
+              {
+                backgroundColor: cores.fundoCampo,
+                borderColor: cores.borda,
+              },
+              tipoAcesso === 'CPF'
+                ? {
+                    backgroundColor: cores.destaque,
+                    borderColor: cores.destaqueBorda,
+                  }
+                : null,
             ]}
+            underlayColor={cores.destaque}
+            onPress={() => alterarTipoAcesso('CPF')}
           >
-            CRMV
-          </Text>
-        </TouchableHighlight>
-      </View>
+            <Text
+              style={[
+                styles.textoBotaoTipo,
+                { color: tipoAcesso === 'CPF' ? '#FFFFFF' : cores.texto },
+              ]}
+            >
+              CPF
+            </Text>
+          </TouchableHighlight>
 
-      <Text style={[styles.label, { color: cores.texto }]}>
-        {tipoAcesso === 'CPF' ? 'CPF' : 'Número do CRMV'}
-      </Text>
+          <TouchableHighlight
+            style={[
+              styles.botaoTipo,
+              {
+                backgroundColor: cores.fundoCampo,
+                borderColor: cores.borda,
+              },
+              tipoAcesso === 'CRMV'
+                ? {
+                    backgroundColor: cores.destaque,
+                    borderColor: cores.destaqueBorda,
+                  }
+                : null,
+            ]}
+            underlayColor={cores.destaque}
+            onPress={() => alterarTipoAcesso('CRMV')}
+          >
+            <Text
+              style={[
+                styles.textoBotaoTipo,
+                { color: tipoAcesso === 'CRMV' ? '#FFFFFF' : cores.texto },
+              ]}
+            >
+              CRMV
+            </Text>
+          </TouchableHighlight>
+        </View>
 
-      {tipoAcesso === 'CPF' ? (
+        <Text style={[styles.label, { color: cores.texto }]}>
+          {tipoAcesso === 'CPF' ? 'CPF' : 'Número do CRMV'}
+        </Text>
+
+        {tipoAcesso === 'CPF' ? (
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: cores.fundoCampo,
+                borderColor: cores.borda,
+                color: cores.texto,
+              },
+            ]}
+            placeholder="000.000.000-00"
+            placeholderTextColor={cores.textoSecundario}
+            value={documento}
+            onChangeText={alterarDocumento}
+            keyboardType="numeric"
+            maxLength={14}
+          />
+        ) : (
+          <View style={styles.linhaCrmv}>
+            <TextInput
+              style={[
+                styles.inputCrmv,
+                {
+                  backgroundColor: cores.fundoCampo,
+                  borderColor: cores.borda,
+                  color: cores.texto,
+                },
+              ]}
+              placeholder="Digite seu CRMV"
+              placeholderTextColor={cores.textoSecundario}
+              value={documento}
+              onChangeText={alterarDocumento}
+              keyboardType="numeric"
+              maxLength={10}
+            />
+
+            <TouchableHighlight
+              style={[
+                styles.botaoUf,
+                {
+                  backgroundColor: cores.fundoCampo,
+                  borderColor: cores.borda,
+                },
+              ]}
+              underlayColor={cores.destaque}
+              onPress={() => setModalEstadoVisivel(true)}
+            >
+              <Text style={[styles.textoUf, { color: cores.texto }]}>
+                {ufCrmv} ▼
+              </Text>
+            </TouchableHighlight>
+          </View>
+        )}
+
+        <Text style={[styles.label, { color: cores.texto }]}>E-mail</Text>
+
+        <View style={styles.linhaEmail}>
+          <TextInput
+            style={[
+              styles.inputEmailUsuario,
+              {
+                backgroundColor: cores.fundoCampo,
+                borderColor: cores.borda,
+                color: cores.texto,
+              },
+            ]}
+            placeholder="usuario"
+            placeholderTextColor={cores.textoSecundario}
+            value={emailUsuario}
+            onChangeText={alterarEmailUsuario}
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+          />
+
+          <Text style={[styles.arrobaEmail, { color: cores.texto }]}>@</Text>
+
+          <TextInput
+            style={[
+              styles.inputEmailDominio,
+              {
+                backgroundColor: cores.fundoCampo,
+                borderColor: cores.borda,
+                color: cores.texto,
+              },
+            ]}
+            placeholder="dominio"
+            placeholderTextColor={cores.textoSecundario}
+            value={emailDominio}
+            onChangeText={alterarEmailDominio}
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+          />
+
+          <TouchableHighlight
+            style={[
+              styles.botaoSufixoEmail,
+              {
+                backgroundColor: cores.fundoCampo,
+                borderColor: cores.borda,
+              },
+            ]}
+            underlayColor={cores.destaque}
+            onPress={() => setModalSufixoVisivel(true)}
+          >
+            <Text style={[styles.textoSufixoEmail, { color: cores.texto }]}>
+              {emailSufixo} ▼
+            </Text>
+          </TouchableHighlight>
+        </View>
+
+        <Text style={[styles.label, { color: cores.texto }]}>Senha</Text>
+
         <TextInput
           style={[
             styles.input,
@@ -371,353 +490,244 @@ export default function CadastroScreen(props: any): React.ReactElement {
               color: cores.texto,
             },
           ]}
-          placeholder="000.000.000-00"
+          placeholder="Crie sua senha"
           placeholderTextColor={cores.textoSecundario}
-          value={documento}
-          onChangeText={alterarDocumento}
-          keyboardType="numeric"
-          maxLength={14}
+          value={senha}
+          onChangeText={setSenha}
+          secureTextEntry={true}
         />
-      ) : (
-        <View style={styles.linhaCrmv}>
-          <TextInput
-            style={[
-              styles.inputCrmv,
-              {
-                backgroundColor: cores.fundoCampo,
-                borderColor: cores.borda,
-                color: cores.texto,
-              },
-            ]}
-            placeholder="Digite seu CRMV"
-            placeholderTextColor={cores.textoSecundario}
-            value={documento}
-            onChangeText={alterarDocumento}
-            keyboardType="numeric"
-            maxLength={10}
-          />
+
+        <Text style={[styles.label, { color: cores.texto }]}>
+          Confirmar senha
+        </Text>
+
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: cores.fundoCampo,
+              borderColor: cores.borda,
+              color: cores.texto,
+            },
+          ]}
+          placeholder="Confirme sua senha"
+          placeholderTextColor={cores.textoSecundario}
+          value={confirmarSenha}
+          onChangeText={setConfirmarSenha}
+          secureTextEntry={true}
+        />
+
+        <TouchableHighlight
+          style={[styles.botaoPrincipal, { backgroundColor: cores.destaque }]}
+          underlayColor="#006F62"
+          onPress={criarConta}
+        >
+          <Text style={styles.textoBotaoPrincipal}>Criar Conta</Text>
+        </TouchableHighlight>
+
+        <View style={styles.areaLogin}>
+          <Text style={[styles.textoConta, { color: cores.textoSecundario }]}>
+            Já possui conta?
+          </Text>
 
           <TouchableHighlight
-            style={[
-              styles.botaoUf,
-              {
-                backgroundColor: cores.fundoCampo,
-                borderColor: cores.borda,
-              },
-            ]}
-            underlayColor={cores.destaque}
-            onPress={() => setModalEstadoVisivel(true)}
+            style={styles.botaoLinkPequeno}
+            underlayColor="transparent"
+            onPress={voltarLogin}
           >
-            <Text style={[styles.textoUf, { color: cores.texto }]}>
-              {ufCrmv} ▼
+            <Text style={[styles.textoLogin, { color: cores.destaque }]}>
+              Fazer login
             </Text>
           </TouchableHighlight>
         </View>
-      )}
 
-      <Text style={[styles.label, { color: cores.texto }]}>E-mail</Text>
-
-      <View style={styles.linhaEmail}>
-        <TextInput
-          style={[
-            styles.inputEmailUsuario,
-            {
-              backgroundColor: cores.fundoCampo,
-              borderColor: cores.borda,
-              color: cores.texto,
-            },
-          ]}
-          placeholder="usuario"
-          placeholderTextColor={cores.textoSecundario}
-          value={emailUsuario}
-          onChangeText={alterarEmailUsuario}
-          autoCapitalize="none"
-          autoCorrect={false}
-          spellCheck={false}
-        />
-
-        <Text style={[styles.arrobaEmail, { color: cores.texto }]}>@</Text>
-
-        <TextInput
-          style={[
-            styles.inputEmailDominio,
-            {
-              backgroundColor: cores.fundoCampo,
-              borderColor: cores.borda,
-              color: cores.texto,
-            },
-          ]}
-          placeholder="dominio"
-          placeholderTextColor={cores.textoSecundario}
-          value={emailDominio}
-          onChangeText={alterarEmailDominio}
-          autoCapitalize="none"
-          autoCorrect={false}
-          spellCheck={false}
-        />
-
-        <TouchableHighlight
-          style={[
-            styles.botaoSufixoEmail,
-            {
-              backgroundColor: cores.fundoCampo,
-              borderColor: cores.borda,
-            },
-          ]}
-          underlayColor={cores.destaque}
-          onPress={() => setModalSufixoVisivel(true)}
+        <Modal
+          visible={modalSufixoVisivel}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setModalSufixoVisivel(false)}
         >
-          <Text style={[styles.textoSufixoEmail, { color: cores.texto }]}>
-            {emailSufixo} ▼
-          </Text>
-        </TouchableHighlight>
-      </View>
-
-      <Text style={[styles.label, { color: cores.texto }]}>Senha</Text>
-
-      <TextInput
-        style={[
-          styles.input,
-          {
-            backgroundColor: cores.fundoCampo,
-            borderColor: cores.borda,
-            color: cores.texto,
-          },
-        ]}
-        placeholder="Crie sua senha"
-        placeholderTextColor={cores.textoSecundario}
-        value={senha}
-        onChangeText={setSenha}
-        secureTextEntry={true}
-      />
-
-      <Text style={[styles.label, { color: cores.texto }]}>
-        Confirmar senha
-      </Text>
-
-      <TextInput
-        style={[
-          styles.input,
-          {
-            backgroundColor: cores.fundoCampo,
-            borderColor: cores.borda,
-            color: cores.texto,
-          },
-        ]}
-        placeholder="Confirme sua senha"
-        placeholderTextColor={cores.textoSecundario}
-        value={confirmarSenha}
-        onChangeText={setConfirmarSenha}
-        secureTextEntry={true}
-      />
-
-      <TouchableHighlight
-        style={[styles.botaoPrincipal, { backgroundColor: cores.destaque }]}
-        underlayColor="#006F62"
-        onPress={criarConta}
-      >
-        <Text style={styles.textoBotaoPrincipal}>Criar Conta</Text>
-      </TouchableHighlight>
-
-      <View style={styles.areaLogin}>
-        <Text style={[styles.textoConta, { color: cores.textoSecundario }]}>
-          Já possui conta?
-        </Text>
-
-        <TouchableHighlight
-          style={styles.botaoLinkPequeno}
-          underlayColor="transparent"
-          onPress={voltarLogin}
-        >
-          <Text style={[styles.textoLogin, { color: cores.destaque }]}>
-            Fazer login
-          </Text>
-        </TouchableHighlight>
-      </View>
-
-      <Modal
-        visible={modalSufixoVisivel}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setModalSufixoVisivel(false)}
-      >
-        <TouchableWithoutFeedback onPress={() => setModalSufixoVisivel(false)}>
-          <View
-            style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}
-          >
+          <TouchableWithoutFeedback onPress={() => setModalSufixoVisivel(false)}>
             <View
-              style={[
-                styles.modalCardSufixo,
-                {
-                  backgroundColor: cores.fundoModal,
-                  borderColor: cores.borda,
-                },
-              ]}
-              onStartShouldSetResponder={() => true}
+              style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}
             >
-              <View style={styles.modalHeader}>
-                <Text style={[styles.modalTitulo, { color: cores.texto }]}>
-                  Final do e-mail
-                </Text>
-
-                <TouchableHighlight
-                  style={[
-                    styles.botaoFecharX,
-                    {
-                      backgroundColor: cores.fundoCampo,
-                      borderColor: cores.borda,
-                    },
-                  ]}
-                  underlayColor={cores.destaque}
-                  onPress={() => setModalSufixoVisivel(false)}
-                >
-                  <Text style={[styles.textoFecharX, { color: cores.texto }]}>
-                    ×
-                  </Text>
-                </TouchableHighlight>
-              </View>
-
-              <TouchableHighlight
+              <View
                 style={[
-                  styles.itemModal,
+                  styles.modalCardSufixo,
                   {
-                    backgroundColor:
-                      emailSufixo === '.com' ? cores.destaque : cores.fundoCampo,
-                    borderColor:
-                      emailSufixo === '.com' ? cores.destaqueBorda : cores.borda,
+                    backgroundColor: cores.fundoModal,
+                    borderColor: cores.borda,
                   },
                 ]}
-                underlayColor={cores.destaque}
-                onPress={() => selecionarSufixoEmail('.com')}
+                onStartShouldSetResponder={() => true}
               >
-                <Text
-                  style={[
-                    styles.textoItemModal,
-                    { color: emailSufixo === '.com' ? '#FFFFFF' : cores.texto },
-                  ]}
-                >
-                  .com
-                </Text>
-              </TouchableHighlight>
-
-              <TouchableHighlight
-                style={[
-                  styles.itemModal,
-                  {
-                    backgroundColor:
-                      emailSufixo === '.com.br'
-                        ? cores.destaque
-                        : cores.fundoCampo,
-                    borderColor:
-                      emailSufixo === '.com.br'
-                        ? cores.destaqueBorda
-                        : cores.borda,
-                  },
-                ]}
-                underlayColor={cores.destaque}
-                onPress={() => selecionarSufixoEmail('.com.br')}
-              >
-                <Text
-                  style={[
-                    styles.textoItemModal,
-                    {
-                      color:
-                        emailSufixo === '.com.br' ? '#FFFFFF' : cores.texto,
-                    },
-                  ]}
-                >
-                  .com.br
-                </Text>
-              </TouchableHighlight>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-
-      <Modal
-        visible={modalEstadoVisivel}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setModalEstadoVisivel(false)}
-      >
-        <TouchableWithoutFeedback onPress={() => setModalEstadoVisivel(false)}>
-          <View
-            style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}
-          >
-            <View
-              style={[
-                styles.modalCardEstados,
-                {
-                  backgroundColor: cores.fundoModal,
-                  borderColor: cores.borda,
-                },
-              ]}
-              onStartShouldSetResponder={() => true}
-            >
-              <View style={styles.modalHeader}>
-                <Text style={[styles.modalTitulo, { color: cores.texto }]}>
-                  Selecione o Estado
-                </Text>
-
-                <TouchableHighlight
-                  style={[
-                    styles.botaoFecharX,
-                    {
-                      backgroundColor: cores.fundoCampo,
-                      borderColor: cores.borda,
-                    },
-                  ]}
-                  underlayColor={cores.destaque}
-                  onPress={() => setModalEstadoVisivel(false)}
-                >
-                  <Text style={[styles.textoFecharX, { color: cores.texto }]}>
-                    ×
+                <View style={styles.modalHeader}>
+                  <Text style={[styles.modalTitulo, { color: cores.texto }]}>
+                    Final do e-mail
                   </Text>
-                </TouchableHighlight>
-              </View>
 
-              <ScrollView style={styles.listaEstados}>
-                {ESTADOS_BRASIL.map((uf) => (
                   <TouchableHighlight
-                    key={uf}
                     style={[
-                      styles.itemModal,
+                      styles.botaoFecharX,
                       {
-                        backgroundColor:
-                          ufCrmv === uf ? cores.destaque : cores.fundoCampo,
-                        borderColor:
-                          ufCrmv === uf ? cores.destaqueBorda : cores.borda,
+                        backgroundColor: cores.fundoCampo,
+                        borderColor: cores.borda,
                       },
                     ]}
                     underlayColor={cores.destaque}
-                    onPress={() => selecionarEstado(uf)}
+                    onPress={() => setModalSufixoVisivel(false)}
                   >
-                    <Text
-                      style={[
-                        styles.textoItemModal,
-                        { color: ufCrmv === uf ? '#FFFFFF' : cores.texto },
-                      ]}
-                    >
-                      {uf}
+                    <Text style={[styles.textoFecharX, { color: cores.texto }]}>
+                      ×
                     </Text>
                   </TouchableHighlight>
-                ))}
-              </ScrollView>
+                </View>
+
+                <TouchableHighlight
+                  style={[
+                    styles.itemModal,
+                    {
+                      backgroundColor:
+                        emailSufixo === '.com' ? cores.destaque : cores.fundoCampo,
+                      borderColor:
+                        emailSufixo === '.com' ? cores.destaqueBorda : cores.borda,
+                    },
+                  ]}
+                  underlayColor={cores.destaque}
+                  onPress={() => selecionarSufixoEmail('.com')}
+                >
+                  <Text
+                    style={[
+                      styles.textoItemModal,
+                      { color: emailSufixo === '.com' ? '#FFFFFF' : cores.texto },
+                    ]}
+                  >
+                    .com
+                  </Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight
+                  style={[
+                    styles.itemModal,
+                    {
+                      backgroundColor:
+                        emailSufixo === '.com.br'
+                          ? cores.destaque
+                          : cores.fundoCampo,
+                      borderColor:
+                        emailSufixo === '.com.br'
+                          ? cores.destaqueBorda
+                          : cores.borda,
+                    },
+                  ]}
+                  underlayColor={cores.destaque}
+                  onPress={() => selecionarSufixoEmail('.com.br')}
+                >
+                  <Text
+                    style={[
+                      styles.textoItemModal,
+                      {
+                        color:
+                          emailSufixo === '.com.br' ? '#FFFFFF' : cores.texto,
+                      },
+                    ]}
+                  >
+                    .com.br
+                  </Text>
+                </TouchableHighlight>
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </ScrollView>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+        <Modal
+          visible={modalEstadoVisivel}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setModalEstadoVisivel(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setModalEstadoVisivel(false)}>
+            <View
+              style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}
+            >
+              <View
+                style={[
+                  styles.modalCardEstados,
+                  {
+                    backgroundColor: cores.fundoModal,
+                    borderColor: cores.borda,
+                  },
+                ]}
+                onStartShouldSetResponder={() => true}
+              >
+                <View style={styles.modalHeader}>
+                  <Text style={[styles.modalTitulo, { color: cores.texto }]}>
+                    Selecione o Estado
+                  </Text>
+
+                  <TouchableHighlight
+                    style={[
+                      styles.botaoFecharX,
+                      {
+                        backgroundColor: cores.fundoCampo,
+                        borderColor: cores.borda,
+                      },
+                    ]}
+                    underlayColor={cores.destaque}
+                    onPress={() => setModalEstadoVisivel(false)}
+                  >
+                    <Text style={[styles.textoFecharX, { color: cores.texto }]}>
+                      ×
+                    </Text>
+                  </TouchableHighlight>
+                </View>
+
+                <ScrollView style={styles.listaEstados}>
+                  {ESTADOS_BRASIL.map((uf) => (
+                    <TouchableHighlight
+                      key={uf}
+                      style={[
+                        styles.itemModal,
+                        {
+                          backgroundColor:
+                            ufCrmv === uf ? cores.destaque : cores.fundoCampo,
+                          borderColor:
+                            ufCrmv === uf ? cores.destaqueBorda : cores.borda,
+                        },
+                      ]}
+                      underlayColor={cores.destaque}
+                      onPress={() => selecionarEstado(uf)}
+                    >
+                      <Text
+                        style={[
+                          styles.textoItemModal,
+                          { color: ufCrmv === uf ? '#FFFFFF' : cores.texto },
+                        ]}
+                      >
+                        {uf}
+                      </Text>
+                    </TouchableHighlight>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardContainer: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
     paddingLeft: 24,
     paddingRight: 24,
     paddingTop: 88,
-    paddingBottom: 32,
+    paddingBottom: 120,
     justifyContent: 'center',
   },
   botaoTema: {
