@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import LoginScreen from './src/screen/LoginScreen';
-import CadastroScreen from './src/screen/CadastroScreen';
-import RecuperarSenhaScreen from './src/screen/RecuperarSenhaScreen';
 
 import DashboardScreen from './src/screen/DashboardScreen';
 import RegistroClinicoScreen from './src/screen/RegistroClinicoScreen';
@@ -15,37 +11,82 @@ import PerfilScreen from './src/screen/PerfilScreen';
 
 const Tab = createBottomTabNavigator();
 
-function AppTabs(): React.ReactElement {
+type AppTabsProps = {
+  temaEscuro: boolean;
+  alternarTema: () => void;
+};
+
+function AppTabs(props: AppTabsProps): React.ReactElement {
+  const coresTab = props.temaEscuro
+    ? {
+        fundo: '#07111F',
+        borda: '#1C2B3A',
+        ativo: '#FFFFFF',
+        inativo: '#8A96A8',
+      }
+    : {
+        fundo: '#FFFFFF',
+        borda: '#B8C6D6',
+        ativo: '#008B7A',
+        inativo: '#6B7A8C',
+      };
+
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarStyle: styles.tabBar,
-          tabBarActiveTintColor: '#FFFFFF',
-          tabBarInactiveTintColor: '#8A96A8',
+          tabBarStyle: [
+            styles.tabBar,
+            {
+              backgroundColor: coresTab.fundo,
+              borderTopColor: coresTab.borda,
+            },
+          ],
+          tabBarActiveTintColor: coresTab.ativo,
+          tabBarInactiveTintColor: coresTab.inativo,
           tabBarLabelStyle: styles.tabLabel,
         }}
       >
         <Tab.Screen
           name="Início"
-          component={DashboardScreen}
           options={{
-            tabBarIcon: ({ focused }: any) => (
+            tabBarIcon: ({ focused }) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text style={styles.tabIcon}>⌂</Text>
+                <Text
+                  style={[
+                    styles.tabIcon,
+                    { color: focused ? coresTab.ativo : coresTab.inativo },
+                  ]}
+                >
+                  ⌂
+                </Text>
               </View>
             ),
           }}
-        />
+        >
+          {() => (
+            <DashboardScreen
+              temaEscuro={props.temaEscuro}
+              alternarTema={props.alternarTema}
+            />
+          )}
+        </Tab.Screen>
 
         <Tab.Screen
           name="Registro"
           component={RegistroClinicoScreen}
           options={{
-            tabBarIcon: ({ focused }: any) => (
+            tabBarIcon: ({ focused }) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text style={styles.tabIcon}>＋</Text>
+                <Text
+                  style={[
+                    styles.tabIcon,
+                    { color: focused ? coresTab.ativo : coresTab.inativo },
+                  ]}
+                >
+                  ＋
+                </Text>
               </View>
             ),
           }}
@@ -55,9 +96,16 @@ function AppTabs(): React.ReactElement {
           name="Histórico"
           component={HistoricoClinicoScreen}
           options={{
-            tabBarIcon: ({ focused }: any) => (
+            tabBarIcon: ({ focused }) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text style={styles.tabIcon}>▤</Text>
+                <Text
+                  style={[
+                    styles.tabIcon,
+                    { color: focused ? coresTab.ativo : coresTab.inativo },
+                  ]}
+                >
+                  ▤
+                </Text>
               </View>
             ),
           }}
@@ -67,9 +115,16 @@ function AppTabs(): React.ReactElement {
           name="Perfil"
           component={PerfilScreen}
           options={{
-            tabBarIcon: ({ focused }: any) => (
+            tabBarIcon: ({ focused }) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text style={styles.tabIcon}>●</Text>
+                <Text
+                  style={[
+                    styles.tabIcon,
+                    { color: focused ? coresTab.ativo : coresTab.inativo },
+                  ]}
+                >
+                  ●
+                </Text>
               </View>
             ),
           }}
@@ -80,52 +135,30 @@ function AppTabs(): React.ReactElement {
 }
 
 export default function App(): React.ReactElement {
-  const [logado, setLogado] = useState<boolean>(false);
-  const [telaAuth, setTelaAuth] = useState<string>('login');
+  const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
 
-  if (logado === true) {
-    return <AppTabs />;
-  }
-
-  if (telaAuth === 'cadastro') {
-    return (
-      <CadastroScreen
-        onVoltarLogin={() => setTelaAuth('login')}
-        onRecuperarSenha={() => setTelaAuth('recuperarSenha')}
-      />
-    );
-  }
-
-  if (telaAuth === 'recuperarSenha') {
-    return (
-      <RecuperarSenhaScreen
-        onVoltarLogin={() => setTelaAuth('login')}
-        onCadastro={() => setTelaAuth('cadastro')}
-      />
-    );
+  function alternarTema(): void {
+    setTemaEscuro((valorAnterior) => !valorAnterior);
   }
 
   return (
-    <LoginScreen
-      onLogin={() => setLogado(true)}
-      onCadastro={() => setTelaAuth('cadastro')}
-      onRecuperarSenha={() => setTelaAuth('recuperarSenha')}
+    <AppTabs
+      temaEscuro={temaEscuro}
+      alternarTema={alternarTema}
     />
   );
 }
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: '#07111F',
-    borderTopColor: '#1C2B3A',
     height: 88,
     paddingBottom: 26,
     paddingTop: 8,
+    borderTopWidth: 1,
   },
   tabLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
-    marginTop: 2,
   },
   activeBar: {
     borderTopWidth: 3,
@@ -134,7 +167,6 @@ const styles = StyleSheet.create({
     width: 48,
     alignItems: 'center',
   },
-
   inactiveBar: {
     borderTopWidth: 3,
     borderTopColor: 'transparent',
@@ -143,7 +175,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabIcon: {
-    color: '#FFFFFF',
     fontSize: 20,
   },
 });

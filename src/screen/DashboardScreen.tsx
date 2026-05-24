@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
+import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -18,6 +20,7 @@ import {
 } from 'react-native';
 
 import { RegistroClinico } from '../model/RegistroClinico';
+
 type Atendimento = {
   id: number;
   horario: string;
@@ -27,44 +30,73 @@ type Atendimento = {
   urgencia: string;
 };
 
+type DashboardProps = {
+  temaEscuro?: boolean;
+  alternarTema?: () => void;
+};
+
 const CHAVE_REGISTROS = '@animed:registrosClinicos';
 
-export default function DashboardScreen(): React.ReactElement {
+export default function DashboardScreen(
+  props: DashboardProps
+): React.ReactElement {
   const [modalMenuVisivel, setModalMenuVisivel] = useState<boolean>(false);
-  const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
   const [atendimentosDia, setAtendimentosDia] = useState<Atendimento[]>([]);
+
+  const temaEscuro = props.temaEscuro ?? true;
 
   const totalAtendimentosHoje = atendimentosDia.length;
   const totalOcorrenciasMes = atendimentosDia.length;
 
   const cores = temaEscuro
     ? {
-      fundo: '#07111F',
-      card: '#172232',
-      cardSecundario: '#171A22',
-      borda: '#23415A',
-      texto: '#FFFFFF',
-      textoSecundario: '#8A96A8',
-      destaque: '#008B7A',
-      destaqueClaro: '#00C2A8',
-      perigo: '#D62828',
-      alerta: '#D99000',
-      baixo: '#00A693',
-    }
+        fundo: '#07111F',
+        card: '#172232',
+        cardSecundario: '#171A22',
+        borda: '#23415A',
+        texto: '#FFFFFF',
+        textoSecundario: '#8A96A8',
+        destaque: '#008B7A',
+        destaqueClaro: '#00C2A8',
+        perigo: '#D62828',
+        alerta: '#D99000',
+        baixo: '#00A693',
+      }
     : {
-      fundo: '#F2F6FA',
-      card: '#FFFFFF',
-      cardSecundario: '#EAF2F7',
-      borda: '#B8C6D6',
-      texto: '#102033',
-      textoSecundario: '#6B7A8C',
-      destaque: '#008B7A',
-      destaqueClaro: '#00A693',
-      perigo: '#C62828',
-      alerta: '#B87500',
-      baixo: '#008B7A',
-    };
-   function obterDataHoje(): string {
+        fundo: '#F2F6FA',
+        card: '#FFFFFF',
+        cardSecundario: '#EAF2F7',
+        borda: '#B8C6D6',
+        texto: '#102033',
+        textoSecundario: '#6B7A8C',
+        destaque: '#008B7A',
+        destaqueClaro: '#00A693',
+        perigo: '#C62828',
+        alerta: '#B87500',
+        baixo: '#008B7A',
+      };
+
+  const coresMenu = temaEscuro
+    ? {
+        fundo: '#0B1526',
+        fundoItem: '#0B1526',
+        fundoAtivo: '#12384A',
+        borda: '#1D3147',
+        texto: '#FFFFFF',
+        textoSecundario: '#CBD5E1',
+        overlay: 'rgba(0, 0, 0, 0.55)',
+      }
+    : {
+        fundo: '#FFFFFF',
+        fundoItem: '#FFFFFF',
+        fundoAtivo: '#DDF7F3',
+        borda: '#B8C6D6',
+        texto: '#102033',
+        textoSecundario: '#516173',
+        overlay: 'rgba(0, 0, 0, 0.35)',
+      };
+
+  function obterDataHoje(): string {
     const hoje = new Date();
 
     const dia = String(hoje.getDate()).padStart(2, '0');
@@ -118,14 +150,10 @@ export default function DashboardScreen(): React.ReactElement {
     }, [])
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      carregarRegistrosDoDia();
-    }, [])
-  );
-
   function alternarTema(): void {
-    setTemaEscuro(!temaEscuro);
+    if (typeof props.alternarTema === 'function') {
+      props.alternarTema();
+    }
   }
 
   function abrirMenu(): void {
@@ -157,7 +185,7 @@ export default function DashboardScreen(): React.ReactElement {
 
     Alert.alert(
       'Configurações',
-      'Tela de configurações será implementada depois.'
+      'Use a tela Configurações para gerenciar preferências do aplicativo.'
     );
   }
 
@@ -174,8 +202,8 @@ export default function DashboardScreen(): React.ReactElement {
     Alert.alert(
       'Agenda do Dia',
       'Existem ' +
-      totalAtendimentosHoje +
-      ' atendimentos cadastrados para hoje.'
+        totalAtendimentosHoje +
+        ' atendimentos cadastrados para hoje.'
     );
   }
 
@@ -183,13 +211,13 @@ export default function DashboardScreen(): React.ReactElement {
     Alert.alert(
       atendimento.animal,
       'Horário: ' +
-      atendimento.horario +
-      '\nMotivo: ' +
-      atendimento.motivo +
-      '\nTutor: ' +
-      atendimento.tutor +
-      '\nUrgência: ' +
-      atendimento.urgencia
+        atendimento.horario +
+        '\nMotivo: ' +
+        atendimento.motivo +
+        '\nTutor: ' +
+        atendimento.tutor +
+        '\nUrgência: ' +
+        atendimento.urgencia
     );
   }
 
@@ -200,6 +228,10 @@ export default function DashboardScreen(): React.ReactElement {
 
     if (urgencia === 'Média') {
       return cores.alerta;
+    }
+
+    if (urgencia === 'Emergência') {
+      return '#8B0000';
     }
 
     return cores.baixo;
@@ -225,7 +257,7 @@ export default function DashboardScreen(): React.ReactElement {
           underlayColor={cores.destaque}
           onPress={abrirMenu}
         >
-          <Text style={[styles.iconeTopo, { color: cores.texto }]}>☰</Text>
+          <Feather name="menu" size={24} color={cores.texto} />
         </TouchableHighlight>
 
         <View style={styles.areaUsuario}>
@@ -249,25 +281,29 @@ export default function DashboardScreen(): React.ReactElement {
           underlayColor={cores.destaque}
           onPress={() => Alert.alert('Notificações', 'Nenhuma notificação nova.')}
         >
-          <Text style={[styles.iconeTopo, { color: cores.texto }]}>🔔</Text>
+          <Ionicons
+            name="notifications-outline"
+            size={24}
+            color={cores.texto}
+          />
         </TouchableHighlight>
       </View>
 
       <View style={styles.areaTitulo}>
-        <Image
-          source={require('../../assets/Animed_Logo.png')}
-          style={styles.logo}
-        />
+        <View style={styles.linhaTituloCentral}>
+          <Image
+            source={require('../../assets/Animed_Logo.png')}
+            style={styles.logo}
+          />
 
-        <View style={styles.areaTextoTitulo}>
           <Text style={[styles.titulo, { color: cores.texto }]}>
             Dashboard
           </Text>
-
-          <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
-            Resumo das suas atividades hoje
-          </Text>
         </View>
+
+        <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
+          Resumo das Atividades Diárias
+        </Text>
       </View>
 
       <View style={styles.areaCards}>
@@ -319,85 +355,99 @@ export default function DashboardScreen(): React.ReactElement {
         </TouchableHighlight>
       </View>
 
-      {atendimentosDia.map((atendimento) => (
-        <TouchableHighlight
-          key={atendimento.id}
+      {atendimentosDia.length === 0 ? (
+        <View
           style={[
-            styles.cardAtendimento,
+            styles.cardVazio,
             {
               backgroundColor: cores.card,
               borderColor: cores.borda,
             },
           ]}
-          underlayColor={cores.cardSecundario}
-          onPress={() => visualizarAtendimento(atendimento)}
         >
-          <View style={styles.conteudoAtendimento}>
-            <View
-              style={[
-                styles.marcadorUrgencia,
-                { backgroundColor: corUrgencia(atendimento.urgencia) },
-              ]}
-            />
-
-            <View
-              style={[
-                styles.caixaHorario,
-                {
-                  backgroundColor: cores.cardSecundario,
-                  borderColor: cores.borda,
-                },
-              ]}
-            >
-              <Text
+          <Text style={[styles.textoVazio, { color: cores.textoSecundario }]}>
+            Nenhum atendimento cadastrado para hoje.
+          </Text>
+        </View>
+      ) : (
+        atendimentosDia.map((atendimento) => (
+          <TouchableHighlight
+            key={atendimento.id}
+            style={[
+              styles.cardAtendimento,
+              {
+                backgroundColor: cores.card,
+                borderColor: cores.borda,
+              },
+            ]}
+            underlayColor={cores.cardSecundario}
+            onPress={() => visualizarAtendimento(atendimento)}
+          >
+            <View style={styles.conteudoAtendimento}>
+              <View
                 style={[
-                  styles.iconeHorario,
-                  { color: cores.textoSecundario },
+                  styles.marcadorUrgencia,
+                  { backgroundColor: corUrgencia(atendimento.urgencia) },
+                ]}
+              />
+
+              <View
+                style={[
+                  styles.caixaHorario,
+                  {
+                    backgroundColor: cores.cardSecundario,
+                    borderColor: cores.borda,
+                  },
                 ]}
               >
-                ◷
-              </Text>
+                <Ionicons
+                  name="time-outline"
+                  size={14}
+                  color={cores.textoSecundario}
+                  style={styles.iconeHorario}
+                />
 
-              <Text style={[styles.horario, { color: cores.texto }]}>
-                {atendimento.horario}
-              </Text>
-            </View>
-
-            <View style={styles.infoAtendimento}>
-              <View style={styles.linhaAnimal}>
-                <Text style={[styles.nomeAnimal, { color: cores.texto }]}>
-                  {atendimento.animal}
+                <Text style={[styles.horario, { color: cores.texto }]}>
+                  {atendimento.horario}
                 </Text>
-
-                <View
-                  style={[
-                    styles.tagUrgencia,
-                    {
-                      backgroundColor: corUrgencia(atendimento.urgencia),
-                    },
-                  ]}
-                >
-                  <Text style={styles.textoTagUrgencia}>
-                    {atendimento.urgencia.toUpperCase()}
-                  </Text>
-                </View>
               </View>
 
-              <Text style={[styles.motivo, { color: cores.texto }]}>
-                {atendimento.motivo}
-              </Text>
+              <View style={styles.infoAtendimento}>
+                <View style={styles.linhaAnimal}>
+                  <Text style={[styles.nomeAnimal, { color: cores.texto }]}>
+                    {atendimento.animal}
+                  </Text>
 
-              <Text style={[styles.tutor, { color: cores.textoSecundario }]}>
-                Tutor: {atendimento.tutor}
-              </Text>
-            </View>
+                  <View
+                    style={[
+                      styles.tagUrgencia,
+                      {
+                        backgroundColor: corUrgencia(atendimento.urgencia),
+                      },
+                    ]}
+                  >
+                    <Text style={styles.textoTagUrgencia}>
+                      {atendimento.urgencia.toUpperCase()}
+                    </Text>
+                  </View>
+                </View>
 
-            <View style={styles.areaSeta}>
-              <Text style={[styles.seta, { color: cores.texto }]}>›</Text>
+                <Text style={[styles.motivo, { color: cores.texto }]}>
+                  {atendimento.motivo}
+                </Text>
+
+                <Text style={[styles.tutor, { color: cores.textoSecundario }]}>
+                  Tutor: {atendimento.tutor}
+                </Text>
+              </View>
+
+              <View style={styles.areaSeta}>
+                <Feather name="chevron-right" size={28} color={cores.texto} />
+              </View>
             </View>
-          </View>
-        </TouchableHighlight>
-      ))}
+          </TouchableHighlight>
+        ))
+      )}
 
       <Modal
         visible={modalMenuVisivel}
@@ -406,39 +456,68 @@ export default function DashboardScreen(): React.ReactElement {
         onRequestClose={fecharMenu}
       >
         <TouchableWithoutFeedback onPress={fecharMenu}>
-          <View style={styles.drawerOverlay}>
+          <View
+            style={[
+              styles.drawerOverlay,
+              { backgroundColor: coresMenu.overlay },
+            ]}
+          >
             <View
-              style={styles.drawerContainer}
+              style={[
+                styles.drawerContainer,
+                {
+                  backgroundColor: coresMenu.fundo,
+                  borderRightColor: coresMenu.borda,
+                },
+              ]}
               onStartShouldSetResponder={() => true}
             >
-              <View style={styles.drawerHeader}>
+              <View
+                style={[
+                  styles.drawerHeader,
+                  { borderBottomColor: coresMenu.borda },
+                ]}
+              >
                 <View style={styles.areaMarcaMenu}>
-                  <View style={styles.logoMenu}>
-                    <Text style={styles.textoLogoMenu}>VM</Text>
-                  </View>
+                  <Image
+                    source={require('../../assets/Animed_Logo.png')}
+                    style={styles.logoMenuImagem}
+                  />
 
-                  <Text style={styles.nomeMenu}>VetMobile</Text>
+                  <Text style={[styles.nomeMenu, { color: coresMenu.texto }]}>
+                    Animed
+                  </Text>
                 </View>
 
                 <TouchableHighlight
                   style={styles.botaoFecharMenu}
-                  underlayColor="#142638"
+                  underlayColor={coresMenu.fundoAtivo}
                   onPress={fecharMenu}
                 >
-                  <Text style={styles.textoFecharMenu}>×</Text>
+                  <Feather
+                    name="x"
+                    size={20}
+                    color={coresMenu.textoSecundario}
+                  />
                 </TouchableHighlight>
               </View>
 
               <View style={styles.drawerItens}>
                 <TouchableHighlight
-                  style={[styles.itemDrawer, styles.itemDrawerAtivo]}
-                  underlayColor="#12384A"
+                  style={[
+                    styles.itemDrawer,
+                    { backgroundColor: coresMenu.fundoAtivo },
+                  ]}
+                  underlayColor={coresMenu.fundoAtivo}
                   onPress={acessarInicio}
                 >
                   <View style={styles.conteudoItemDrawer}>
-                    <Text style={[styles.iconeDrawer, styles.textoAtivoDrawer]}>
-                      ⌂
-                    </Text>
+                    <Ionicons
+                      name="home-outline"
+                      size={18}
+                      color="#00C2A8"
+                      style={styles.iconeDrawer}
+                    />
 
                     <Text style={[styles.textoDrawer, styles.textoAtivoDrawer]}>
                       Início
@@ -447,53 +526,95 @@ export default function DashboardScreen(): React.ReactElement {
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                  style={styles.itemDrawer}
-                  underlayColor="#142638"
+                  style={[
+                    styles.itemDrawer,
+                    { backgroundColor: coresMenu.fundoItem },
+                  ]}
+                  underlayColor={coresMenu.fundoAtivo}
                   onPress={acessarPerfil}
                 >
                   <View style={styles.conteudoItemDrawer}>
-                    <Text style={styles.iconeDrawer}>♙</Text>
+                    <Ionicons
+                      name="person-outline"
+                      size={18}
+                      color={coresMenu.textoSecundario}
+                      style={styles.iconeDrawer}
+                    />
 
-                    <Text style={styles.textoDrawer}>Perfil</Text>
+                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
+                      Perfil
+                    </Text>
                   </View>
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                  style={styles.itemDrawer}
-                  underlayColor="#142638"
+                  style={[
+                    styles.itemDrawer,
+                    { backgroundColor: coresMenu.fundoItem },
+                  ]}
+                  underlayColor={coresMenu.fundoAtivo}
                   onPress={acessarHistorico}
                 >
                   <View style={styles.conteudoItemDrawer}>
-                    <Text style={styles.iconeDrawer}>◷</Text>
+                    <Ionicons
+                      name="time-outline"
+                      size={18}
+                      color={coresMenu.textoSecundario}
+                      style={styles.iconeDrawer}
+                    />
 
-                    <Text style={styles.textoDrawer}>Histórico</Text>
+                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
+                      Histórico
+                    </Text>
                   </View>
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                  style={styles.itemDrawer}
-                  underlayColor="#142638"
+                  style={[
+                    styles.itemDrawer,
+                    { backgroundColor: coresMenu.fundoItem },
+                  ]}
+                  underlayColor={coresMenu.fundoAtivo}
                   onPress={acessarConfiguracoes}
                 >
                   <View style={styles.conteudoItemDrawer}>
-                    <Text style={styles.iconeDrawer}>⚙</Text>
+                    <Ionicons
+                      name="settings-outline"
+                      size={18}
+                      color={coresMenu.textoSecundario}
+                      style={styles.iconeDrawer}
+                    />
 
-                    <Text style={styles.textoDrawer}>Configurações</Text>
+                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
+                      Configurações
+                    </Text>
                   </View>
                 </TouchableHighlight>
               </View>
 
-              <View style={styles.drawerRodape}>
+              <View
+                style={[
+                  styles.drawerRodape,
+                  { borderTopColor: coresMenu.borda },
+                ]}
+              >
                 <View style={styles.linhaTemaMenu}>
                   <View style={styles.conteudoItemDrawer}>
-                    <Text style={styles.iconeDrawer}>☼</Text>
+                    <Feather
+                      name="sun"
+                      size={17}
+                      color={coresMenu.textoSecundario}
+                      style={styles.iconeDrawer}
+                    />
 
-                    <Text style={styles.textoDrawer}>Tema Claro</Text>
+                    <Text style={[styles.textoDrawer, { color: coresMenu.texto }]}>
+                      Tema Claro
+                    </Text>
                   </View>
 
                   <Switch
                     value={!temaEscuro}
-                    onValueChange={() => alternarTema()}
+                    onValueChange={alternarTema}
                     trackColor={{ false: '#31445F', true: '#008B7A' }}
                     thumbColor="#FFFFFF"
                   />
@@ -501,11 +622,16 @@ export default function DashboardScreen(): React.ReactElement {
 
                 <TouchableHighlight
                   style={styles.itemSair}
-                  underlayColor="#27151A"
+                  underlayColor={temaEscuro ? '#27151A' : '#FCE8EA'}
                   onPress={sairSistema}
                 >
                   <View style={styles.conteudoItemDrawer}>
-                    <Text style={styles.iconeSair}>↪</Text>
+                    <MaterialCommunityIcons
+                      name="logout"
+                      size={18}
+                      color="#FF5A6A"
+                      style={styles.iconeDrawer}
+                    />
 
                     <Text style={styles.textoSair}>Sair</Text>
                   </View>
@@ -542,10 +668,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconeTopo: {
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
   areaUsuario: {
     alignItems: 'center',
   },
@@ -557,26 +679,32 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   areaTitulo: {
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 26,
   },
-  areaTextoTitulo: {
-    flex: 1,
+  linhaTituloCentral: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
   },
   logo: {
-    width: 64,
-    height: 64,
-    resizeMode: 'contain',
-    marginRight: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    resizeMode: 'cover',
+    marginRight: 10,
   },
   titulo: {
     fontSize: 28,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   subtitulo: {
-    fontSize: 13,
-    marginTop: 4,
+    fontSize: 15,
+    marginTop: 2,
+    textAlign: 'center',
   },
   areaCards: {
     flexDirection: 'row',
@@ -616,6 +744,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: 'bold',
   },
+  cardVazio: {
+    width: '100%',
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 18,
+    marginBottom: 16,
+  },
+  textoVazio: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
   cardAtendimento: {
     width: '100%',
     borderRadius: 16,
@@ -643,7 +782,6 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   iconeHorario: {
-    fontSize: 14,
     marginBottom: 4,
   },
   horario: {
@@ -687,22 +825,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  seta: {
-    fontSize: 34,
-    fontWeight: 'bold',
-  },
   drawerOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
   },
   drawerContainer: {
     width: '62%',
     height: '100%',
-    backgroundColor: '#0B1526',
     borderRightWidth: 1,
-    borderRightColor: '#1D3147',
   },
   drawerHeader: {
     height: 66,
@@ -712,28 +843,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: '#1D3147',
   },
   areaMarcaMenu: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  logoMenu: {
+  logoMenuImagem: {
     width: 32,
     height: 32,
-    borderRadius: 10,
-    backgroundColor: '#008B7A',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 16,
+    resizeMode: 'cover',
     marginRight: 10,
   },
-  textoLogoMenu: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: 'bold',
-  },
   nomeMenu: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -744,11 +866,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textoFecharMenu: {
-    color: '#8A96A8',
-    fontSize: 26,
-    lineHeight: 28,
-  },
   drawerItens: {
     paddingTop: 16,
     paddingLeft: 16,
@@ -756,26 +873,19 @@ const styles = StyleSheet.create({
   },
   itemDrawer: {
     height: 42,
-    borderRadius: 10,
+    borderRadius: 12,
     justifyContent: 'center',
     paddingLeft: 12,
-    marginBottom: 6,
-  },
-  itemDrawerAtivo: {
-    backgroundColor: '#12384A',
+    marginBottom: 8,
   },
   conteudoItemDrawer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   iconeDrawer: {
-    width: 26,
-    color: '#CBD5E1',
-    fontSize: 17,
-    marginRight: 8,
+    marginRight: 12,
   },
   textoDrawer: {
-    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '500',
   },
@@ -790,7 +900,6 @@ const styles = StyleSheet.create({
     paddingLeft: 18,
     paddingRight: 18,
     borderTopWidth: 1,
-    borderTopColor: '#1D3147',
   },
   linhaTemaMenu: {
     height: 44,
@@ -804,12 +913,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     paddingLeft: 8,
-  },
-  iconeSair: {
-    width: 26,
-    color: '#FF5A6A',
-    fontSize: 18,
-    marginRight: 8,
   },
   textoSair: {
     color: '#FF5A6A',
