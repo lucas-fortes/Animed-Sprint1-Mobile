@@ -422,8 +422,7 @@ export default function RecuperarSenhaScreen(props: any): React.ReactElement {
                         placeholderTextColor={cores.textoSecundario}
                         value={documento}
                         onChangeText={alterarDocumento}
-                        keyboardType="number-pad"
-                        inputMode="numeric"
+                        keyboardType="default"
                         maxLength={14}
                     />
                 ) : (
@@ -441,9 +440,8 @@ export default function RecuperarSenhaScreen(props: any): React.ReactElement {
                             placeholderTextColor={cores.textoSecundario}
                             value={documento}
                             onChangeText={alterarDocumento}
-                            keyboardType="number-pad"
-                            inputMode="numeric"
-                            maxLength={10}
+                            keyboardType="default"
+                            maxLength={8}
                         />
 
                         <TouchableHighlight

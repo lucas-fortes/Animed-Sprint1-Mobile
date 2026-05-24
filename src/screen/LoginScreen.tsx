@@ -302,8 +302,7 @@ export default function LoginScreen(props: any): React.ReactElement {
             placeholderTextColor={cores.textoSecundario}
             value={documento}
             onChangeText={alterarDocumento}
-            keyboardType="number-pad"
-            inputMode="numeric"
+            keyboardType="default"
             maxLength={14}
           />
         ) : (
@@ -321,8 +320,9 @@ export default function LoginScreen(props: any): React.ReactElement {
               placeholderTextColor={cores.textoSecundario}
               value={documento}
               onChangeText={alterarDocumento}
-              keyboardType="number-pad"
-              inputMode="numeric"
+              keyboardType="default"
+              maxLength={8}
+              showSoftInputOnFocus={true}
             />
 
             <TouchableHighlight
