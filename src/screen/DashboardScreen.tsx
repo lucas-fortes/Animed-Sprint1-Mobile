@@ -32,6 +32,7 @@ type Atendimento = {
 
 type DashboardProps = {
   temaEscuro?: boolean;
+  onAbrirMenu?: () => void;
   alternarTema?: () => void;
   onAbrirPerfil?: () => void;
   onAbrirHistorico?: () => void;
@@ -160,6 +161,11 @@ export default function DashboardScreen(
   }
 
   function abrirMenu(): void {
+  if (typeof props.onAbrirMenu === 'function') {
+    props.onAbrirMenu();
+    return;
+  }
+
     setModalMenuVisivel(true);
   }
 
