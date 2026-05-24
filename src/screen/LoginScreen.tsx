@@ -150,18 +150,13 @@ export default function LoginScreen(props: any): React.ReactElement {
     return true;
   }
 
-  function entrar(): void {
-    if (validarLogin() === false) {
-      return;
-    }
-
-    Alert.alert('Login', 'Login realizado em modo demonstrativo.', [
-      {
-        text: 'OK',
-        onPress: () => props.onLogin(),
-      },
-    ]);
+ function entrar(): void {
+  if (validarLogin() === false) {
+    return;
   }
+
+  props.onLogin();
+}
 
   function abrirCadastro(): void {
     if (props.onCadastro !== undefined) {
