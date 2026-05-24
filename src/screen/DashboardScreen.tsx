@@ -53,41 +53,54 @@ const ATENDIMENTOS_DIA: Atendimento[] = [
     tutor: 'Mariana Costa',
     urgencia: 'Baixa',
   },
+  {
+    id: 5,
+    horario: '16:30',
+    animal: 'Belinha',
+    motivo: 'Retorno dermatológico',
+    tutor: 'Fernanda Lima',
+    urgencia: 'Média',
+  },
 ];
 
 export default function DashboardScreen(): React.ReactElement {
   const [modalMenuVisivel, setModalMenuVisivel] = useState<boolean>(false);
   const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
+  const [atendimentosDia, setAtendimentosDia] =
+    useState<Atendimento[]>(ATENDIMENTOS_DIA);
 
+  const totalAtendimentosHoje = atendimentosDia.length;
+  const totalOcorrenciasMes = atendimentosDia.length;
   const cores = temaEscuro
+
     ? {
-        fundo: '#07111F',
-        card: '#172232',
-        cardSecundario: '#171A22',
-        borda: '#23415A',
-        texto: '#FFFFFF',
-        textoSecundario: '#8A96A8',
-        destaque: '#008B7A',
-        destaqueClaro: '#00C2A8',
-        perigo: '#D62828',
-        alerta: '#D99000',
-        baixo: '#00A693',
-        overlay: 'rgba(0, 0, 0, 0.60)',
-      }
+      fundo: '#07111F',
+      card: '#172232',
+      cardSecundario: '#171A22',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueClaro: '#00C2A8',
+      perigo: '#D62828',
+      alerta: '#D99000',
+      baixo: '#00A693',
+      overlay: 'rgba(0, 0, 0, 0.60)',
+    }
     : {
-        fundo: '#F2F6FA',
-        card: '#FFFFFF',
-        cardSecundario: '#EAF2F7',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#6B7A8C',
-        destaque: '#008B7A',
-        destaqueClaro: '#00A693',
-        perigo: '#C62828',
-        alerta: '#B87500',
-        baixo: '#008B7A',
-        overlay: 'rgba(0, 0, 0, 0.35)',
-      };
+      fundo: '#F2F6FA',
+      card: '#FFFFFF',
+      cardSecundario: '#EAF2F7',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueClaro: '#00A693',
+      perigo: '#C62828',
+      alerta: '#B87500',
+      baixo: '#008B7A',
+      overlay: 'rgba(0, 0, 0, 0.35)',
+    };
 
   function alternarTema(): void {
     setTemaEscuro(!temaEscuro);
@@ -129,23 +142,23 @@ export default function DashboardScreen(): React.ReactElement {
   }
 
   function verTodosAtendimentos(): void {
-    Alert.alert(
-      'Agenda do Dia',
-      'Esta versão inicial possui dados fictícios. A integração real será feita depois.'
-    );
-  }
+  Alert.alert(
+    'Agenda do Dia',
+    'Existem ' + totalAtendimentosHoje + ' atendimentos cadastrados para hoje.'
+  );
+}
 
   function visualizarAtendimento(atendimento: Atendimento): void {
     Alert.alert(
       atendimento.animal,
       'Horário: ' +
-        atendimento.horario +
-        '\nMotivo: ' +
-        atendimento.motivo +
-        '\nTutor: ' +
-        atendimento.tutor +
-        '\nUrgência: ' +
-        atendimento.urgencia
+      atendimento.horario +
+      '\nMotivo: ' +
+      atendimento.motivo +
+      '\nTutor: ' +
+      atendimento.tutor +
+      '\nUrgência: ' +
+      atendimento.urgencia
     );
   }
 
@@ -236,7 +249,7 @@ export default function DashboardScreen(): React.ReactElement {
             },
           ]}
         >
-          <Text style={styles.numeroResumo}>12</Text>
+          <Text style={styles.numeroResumo}>{totalAtendimentosHoje}</Text>
           <Text style={styles.textoResumo}>ATENDIMENTOS HOJE</Text>
         </View>
 
@@ -249,9 +262,8 @@ export default function DashboardScreen(): React.ReactElement {
             },
           ]}
         >
-          <Text style={[styles.numeroResumo, { color: cores.texto }]}>48</Text>
-          <Text style={[styles.textoResumo, { color: cores.texto }]}>
-            OCORRÊNCIAS NO MÊS
+          <Text style={[styles.numeroResumo, { color: cores.texto }]}>
+            {totalOcorrenciasMes}
           </Text>
         </View>
       </View>
@@ -271,7 +283,7 @@ export default function DashboardScreen(): React.ReactElement {
         </TouchableHighlight>
       </View>
 
-      {ATENDIMENTOS_DIA.map((atendimento) => (
+      {atendimentosDia.map((atendimento) => (
         <TouchableHighlight
           key={atendimento.id}
           style={[
