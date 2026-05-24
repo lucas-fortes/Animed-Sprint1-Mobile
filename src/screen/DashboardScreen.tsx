@@ -33,6 +33,9 @@ type Atendimento = {
 type DashboardProps = {
   temaEscuro?: boolean;
   alternarTema?: () => void;
+  onAbrirPerfil?: () => void;
+  onAbrirHistorico?: () => void;
+  onAbrirConfiguracoes?: () => void;
 };
 
 const CHAVE_REGISTROS = '@animed:registrosClinicos';
@@ -169,25 +172,28 @@ export default function DashboardScreen(
   }
 
   function acessarPerfil(): void {
-    fecharMenu();
+  fecharMenu();
 
-    Alert.alert('Perfil', 'Use a aba Perfil no menu inferior.');
+  if (typeof props.onAbrirPerfil === 'function') {
+    props.onAbrirPerfil();
   }
+}
 
-  function acessarHistorico(): void {
-    fecharMenu();
+function acessarHistorico(): void {
+  fecharMenu();
 
-    Alert.alert('Histórico', 'Use a aba Histórico no menu inferior.');
+  if (typeof props.onAbrirHistorico === 'function') {
+    props.onAbrirHistorico();
   }
+}
 
-  function acessarConfiguracoes(): void {
-    fecharMenu();
+function acessarConfiguracoes(): void {
+  fecharMenu();
 
-    Alert.alert(
-      'Configurações',
-      'Use a tela Configurações para gerenciar preferências do aplicativo.'
-    );
+  if (typeof props.onAbrirConfiguracoes === 'function') {
+    props.onAbrirConfiguracoes();
   }
+}
 
   function sairSistema(): void {
     fecharMenu();

@@ -8,6 +8,7 @@ import DashboardScreen from './src/screen/DashboardScreen';
 import RegistroClinicoScreen from './src/screen/RegistroClinicoScreen';
 import HistoricoClinicoScreen from './src/screen/HistoricoClinicoScreen';
 import PerfilScreen from './src/screen/PerfilScreen';
+import ConfiguracoesScreen from './src/screen/ConfiguracoesScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,6 +32,31 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
         inativo: '#6B7A8C',
       };
 
+  function renderizarIcone(
+    focused: boolean,
+    icone: string
+  ): React.ReactElement {
+    return (
+      <View
+        style={[
+          focused ? styles.activeBar : styles.inactiveBar,
+          focused
+            ? { borderTopColor: coresTab.ativo }
+            : { borderTopColor: 'transparent' },
+        ]}
+      >
+        <Text
+          style={[
+            styles.tabIcon,
+            { color: focused ? coresTab.ativo : coresTab.inativo },
+          ]}
+        >
+          {icone}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -51,24 +77,20 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
         <Tab.Screen
           name="Início"
           options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text
-                  style={[
-                    styles.tabIcon,
-                    { color: focused ? coresTab.ativo : coresTab.inativo },
-                  ]}
-                >
-                  ⌂
-                </Text>
-              </View>
-            ),
+            tabBarIcon: ({ focused }) => renderizarIcone(focused, '⌂'),
           }}
         >
-          {() => (
+          {(tabProps: any) => (
             <DashboardScreen
               temaEscuro={props.temaEscuro}
               alternarTema={props.alternarTema}
+              onAbrirPerfil={() => tabProps.navigation.navigate('Perfil')}
+              onAbrirHistorico={() =>
+                tabProps.navigation.navigate('Histórico')
+              }
+              onAbrirConfiguracoes={() =>
+                tabProps.navigation.navigate('Configurações')
+              }
             />
           )}
         </Tab.Screen>
@@ -77,18 +99,7 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
           name="Registro"
           component={RegistroClinicoScreen}
           options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text
-                  style={[
-                    styles.tabIcon,
-                    { color: focused ? coresTab.ativo : coresTab.inativo },
-                  ]}
-                >
-                  ＋
-                </Text>
-              </View>
-            ),
+            tabBarIcon: ({ focused }) => renderizarIcone(focused, '＋'),
           }}
         />
 
@@ -96,18 +107,7 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
           name="Histórico"
           component={HistoricoClinicoScreen}
           options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text
-                  style={[
-                    styles.tabIcon,
-                    { color: focused ? coresTab.ativo : coresTab.inativo },
-                  ]}
-                >
-                  ▤
-                </Text>
-              </View>
-            ),
+            tabBarIcon: ({ focused }) => renderizarIcone(focused, '▤'),
           }}
         />
 
@@ -115,18 +115,15 @@ function AppTabs(props: AppTabsProps): React.ReactElement {
           name="Perfil"
           component={PerfilScreen}
           options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={focused ? styles.activeBar : styles.inactiveBar}>
-                <Text
-                  style={[
-                    styles.tabIcon,
-                    { color: focused ? coresTab.ativo : coresTab.inativo },
-                  ]}
-                >
-                  ●
-                </Text>
-              </View>
-            ),
+            tabBarIcon: ({ focused }) => renderizarIcone(focused, '●'),
+          }}
+        />
+
+        <Tab.Screen
+          name="Configurações"
+          component={ConfiguracoesScreen}
+          options={{
+            tabBarButton: () => null,
           }}
         />
       </Tab.Navigator>
@@ -141,12 +138,7 @@ export default function App(): React.ReactElement {
     setTemaEscuro((valorAnterior) => !valorAnterior);
   }
 
-  return (
-    <AppTabs
-      temaEscuro={temaEscuro}
-      alternarTema={alternarTema}
-    />
-  );
+  return <AppTabs temaEscuro={temaEscuro} alternarTema={alternarTema} />;
 }
 
 const styles = StyleSheet.create({
@@ -162,14 +154,12 @@ const styles = StyleSheet.create({
   },
   activeBar: {
     borderTopWidth: 3,
-    borderTopColor: '#FFFFFF',
     paddingTop: 4,
     width: 48,
     alignItems: 'center',
   },
   inactiveBar: {
     borderTopWidth: 3,
-    borderTopColor: 'transparent',
     paddingTop: 4,
     width: 48,
     alignItems: 'center',
