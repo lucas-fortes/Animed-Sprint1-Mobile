@@ -5,7 +5,6 @@ import {
   Modal,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   TouchableHighlight,
@@ -24,36 +23,33 @@ export default function LoginScreen(props: any): React.ReactElement {
   const [ufCrmv, setUfCrmv] = useState<string>('SP');
   const [senha, setSenha] = useState<string>('');
   const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
-  const [modalTipoVisivel, setModalTipoVisivel] = useState<boolean>(false);
-  const [modalEstadosVisivel, setModalEstadosVisivel] = useState<boolean>(false);
+  const [modalEstadoVisivel, setModalEstadoVisivel] = useState<boolean>(false);
 
   const cores = temaEscuro
     ? {
-        fundo: '#07111F',
-        card: '#111820',
-        input: '#171A22',
-        borda: '#23415A',
-        texto: '#FFFFFF',
-        textoSecundario: '#8A96A8',
-        destaque: '#008B7A',
-        destaqueBorda: '#00C2A8',
-        link: '#00C2FF',
-        modalFundo: '#0E1726',
-        sobreposicao: 'rgba(0, 0, 0, 0.60)',
-      }
+      fundo: '#07111F',
+      fundoCampo: '#171A22',
+      fundoModal: '#111820',
+      borda: '#23415A',
+      texto: '#FFFFFF',
+      textoSecundario: '#8A96A8',
+      destaque: '#008B7A',
+      destaqueBorda: '#00C2A8',
+      link: '#00C2FF',
+      overlay: 'rgba(0, 0, 0, 0.60)',
+    }
     : {
-        fundo: '#F2F6FA',
-        card: '#FFFFFF',
-        input: '#FFFFFF',
-        borda: '#B8C6D6',
-        texto: '#102033',
-        textoSecundario: '#6B7A8C',
-        destaque: '#008B7A',
-        destaqueBorda: '#00A693',
-        link: '#0077CC',
-        modalFundo: '#FFFFFF',
-        sobreposicao: 'rgba(0, 0, 0, 0.35)',
-      };
+      fundo: '#F2F6FA',
+      fundoCampo: '#FFFFFF',
+      fundoModal: '#FFFFFF',
+      borda: '#B8C6D6',
+      texto: '#102033',
+      textoSecundario: '#6B7A8C',
+      destaque: '#008B7A',
+      destaqueBorda: '#00A693',
+      link: '#0077CC',
+      overlay: 'rgba(0, 0, 0, 0.35)',
+    };
 
   function formatarCpf(valor: string): string {
     const numeros = valor.replace(/\D/g, '').slice(0, 11);
@@ -95,15 +91,18 @@ export default function LoginScreen(props: any): React.ReactElement {
     }
   }
 
-  function selecionarTipoAcesso(tipo: string): void {
+  function alterarTipoAcesso(tipo: string): void {
     setTipoAcesso(tipo);
     setDocumento('');
-    setModalTipoVisivel(false);
   }
 
   function selecionarEstado(uf: string): void {
     setUfCrmv(uf);
-    setModalEstadosVisivel(false);
+    setModalEstadoVisivel(false);
+  }
+
+  function alternarTema(): void {
+    setTemaEscuro(!temaEscuro);
   }
 
   function validarLogin(): boolean {
@@ -160,18 +159,26 @@ export default function LoginScreen(props: any): React.ReactElement {
         { backgroundColor: cores.fundo },
       ]}
     >
-      <View style={styles.areaTema}>
-        <Text style={[styles.textoTema, { color: cores.texto }]}>
-          Tema claro
+      <TouchableHighlight
+        style={[
+          styles.botaoTema,
+          {
+            backgroundColor: temaEscuro ? '#0E1726' : '#EAF2F7',
+            borderColor: temaEscuro ? '#1E3A4F' : '#B8C6D6',
+          },
+        ]}
+        underlayColor={cores.destaque}
+        onPress={alternarTema}
+      >
+        <Text
+          style={[
+            styles.iconeTema,
+            { color: temaEscuro ? '#00C2A8' : '#008B7A' },
+          ]}
+        >
+          {temaEscuro ? '☾' : '☀'}
         </Text>
-
-        <Switch
-          value={!temaEscuro}
-          onValueChange={(valor: boolean) => setTemaEscuro(!valor)}
-          trackColor={{ false: '#334155', true: '#008B7A' }}
-          thumbColor="#FFFFFF"
-        />
-      </View>
+      </TouchableHighlight>
 
       <View style={styles.areaLogo}>
         <Image
@@ -186,27 +193,65 @@ export default function LoginScreen(props: any): React.ReactElement {
         </Text>
       </View>
 
-      <TouchableHighlight
-        style={[
-          styles.selectTipo,
-          {
-            backgroundColor: cores.input,
-            borderColor: cores.borda,
-          },
-        ]}
-        underlayColor={cores.card}
-        onPress={() => setModalTipoVisivel(true)}
-      >
-        <View style={styles.selectConteudo}>
-          <Text style={[styles.selectTexto, { color: cores.texto }]}>
-            {tipoAcesso === 'CPF' ? 'Acesso via CPF' : 'Acesso via CRMV'}
-          </Text>
+      <Text style={[styles.label, { color: cores.texto }]}>
+        Tipo de acesso
+      </Text>
 
-          <Text style={[styles.selectSeta, { color: cores.textoSecundario }]}>
-            ▼
+      <View style={styles.linhaTipos}>
+        <TouchableHighlight
+          style={[
+            styles.botaoTipo,
+            {
+              backgroundColor: cores.fundoCampo,
+              borderColor: cores.borda,
+            },
+            tipoAcesso === 'CPF'
+              ? {
+                backgroundColor: cores.destaque,
+                borderColor: cores.destaqueBorda,
+              }
+              : null,
+          ]}
+          underlayColor={cores.destaque}
+          onPress={() => alterarTipoAcesso('CPF')}
+        >
+          <Text
+            style={[
+              styles.textoBotaoTipo,
+              { color: tipoAcesso === 'CPF' ? '#FFFFFF' : cores.texto },
+            ]}
+          >
+            CPF
           </Text>
-        </View>
-      </TouchableHighlight>
+        </TouchableHighlight>
+
+        <TouchableHighlight
+          style={[
+            styles.botaoTipo,
+            {
+              backgroundColor: cores.fundoCampo,
+              borderColor: cores.borda,
+            },
+            tipoAcesso === 'CRMV'
+              ? {
+                backgroundColor: cores.destaque,
+                borderColor: cores.destaqueBorda,
+              }
+              : null,
+          ]}
+          underlayColor={cores.destaque}
+          onPress={() => alterarTipoAcesso('CRMV')}
+        >
+          <Text
+            style={[
+              styles.textoBotaoTipo,
+              { color: tipoAcesso === 'CRMV' ? '#FFFFFF' : cores.texto },
+            ]}
+          >
+            CRMV
+          </Text>
+        </TouchableHighlight>
+      </View>
 
       <Text style={[styles.label, { color: cores.texto }]}>
         {tipoAcesso === 'CPF' ? 'CPF' : 'Número do CRMV'}
@@ -217,7 +262,7 @@ export default function LoginScreen(props: any): React.ReactElement {
           style={[
             styles.input,
             {
-              backgroundColor: cores.input,
+              backgroundColor: cores.fundoCampo,
               borderColor: cores.borda,
               color: cores.texto,
             },
@@ -230,12 +275,12 @@ export default function LoginScreen(props: any): React.ReactElement {
           maxLength={14}
         />
       ) : (
-        <View style={styles.linhaDocumento}>
+        <View style={styles.linhaCrmv}>
           <TextInput
             style={[
               styles.inputCrmv,
               {
-                backgroundColor: cores.input,
+                backgroundColor: cores.fundoCampo,
                 borderColor: cores.borda,
                 color: cores.texto,
               },
@@ -252,12 +297,12 @@ export default function LoginScreen(props: any): React.ReactElement {
             style={[
               styles.botaoUf,
               {
-                backgroundColor: cores.input,
+                backgroundColor: cores.fundoCampo,
                 borderColor: cores.borda,
               },
             ]}
-            underlayColor={cores.card}
-            onPress={() => setModalEstadosVisivel(true)}
+            underlayColor={cores.destaque}
+            onPress={() => setModalEstadoVisivel(true)}
           >
             <Text style={[styles.textoUf, { color: cores.texto }]}>
               {ufCrmv} ▼
@@ -272,7 +317,7 @@ export default function LoginScreen(props: any): React.ReactElement {
         style={[
           styles.input,
           {
-            backgroundColor: cores.input,
+            backgroundColor: cores.fundoCampo,
             borderColor: cores.borda,
             color: cores.texto,
           },
@@ -318,111 +363,13 @@ export default function LoginScreen(props: any): React.ReactElement {
         </TouchableHighlight>
       </View>
 
-      <Modal
-        visible={modalTipoVisivel}
-        transparent={true}
-        animationType="fade"
-      >
-        <View
-          style={[
-            styles.modalOverlay,
-            { backgroundColor: cores.sobreposicao },
-          ]}
-        >
+      <Modal visible={modalEstadoVisivel} transparent={true} animationType="fade">
+        <View style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}>
           <View
             style={[
-              styles.modalCardPequeno,
+              styles.modalCardEstados,
               {
-                backgroundColor: cores.modalFundo,
-                borderColor: cores.borda,
-              },
-            ]}
-          >
-            <Text style={[styles.modalTitulo, { color: cores.texto }]}>
-              Tipo de acesso
-            </Text>
-
-            <TouchableHighlight
-              style={[
-                styles.itemModal,
-                {
-                  backgroundColor:
-                    tipoAcesso === 'CPF' ? cores.destaque : cores.input,
-                  borderColor:
-                    tipoAcesso === 'CPF' ? cores.destaqueBorda : cores.borda,
-                },
-              ]}
-              underlayColor={cores.destaque}
-              onPress={() => selecionarTipoAcesso('CPF')}
-            >
-              <Text
-                style={[
-                  styles.textoItemModal,
-                  { color: tipoAcesso === 'CPF' ? '#FFFFFF' : cores.texto },
-                ]}
-              >
-                Acesso via CPF
-              </Text>
-            </TouchableHighlight>
-
-            <TouchableHighlight
-              style={[
-                styles.itemModal,
-                {
-                  backgroundColor:
-                    tipoAcesso === 'CRMV' ? cores.destaque : cores.input,
-                  borderColor:
-                    tipoAcesso === 'CRMV' ? cores.destaqueBorda : cores.borda,
-                },
-              ]}
-              underlayColor={cores.destaque}
-              onPress={() => selecionarTipoAcesso('CRMV')}
-            >
-              <Text
-                style={[
-                  styles.textoItemModal,
-                  { color: tipoAcesso === 'CRMV' ? '#FFFFFF' : cores.texto },
-                ]}
-              >
-                Acesso via CRMV
-              </Text>
-            </TouchableHighlight>
-
-            <TouchableHighlight
-              style={[
-                styles.botaoFecharModal,
-                {
-                  backgroundColor: cores.input,
-                  borderColor: cores.borda,
-                },
-              ]}
-              underlayColor={cores.card}
-              onPress={() => setModalTipoVisivel(false)}
-            >
-              <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
-                Fechar
-              </Text>
-            </TouchableHighlight>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        visible={modalEstadosVisivel}
-        transparent={true}
-        animationType="fade"
-      >
-        <View
-          style={[
-            styles.modalOverlay,
-            { backgroundColor: cores.sobreposicao },
-          ]}
-        >
-          <View
-            style={[
-              styles.modalCard,
-              {
-                backgroundColor: cores.modalFundo,
+                backgroundColor: cores.fundoModal,
                 borderColor: cores.borda,
               },
             ]}
@@ -439,7 +386,7 @@ export default function LoginScreen(props: any): React.ReactElement {
                     styles.itemModal,
                     {
                       backgroundColor:
-                        ufCrmv === uf ? cores.destaque : cores.input,
+                        ufCrmv === uf ? cores.destaque : cores.fundoCampo,
                       borderColor:
                         ufCrmv === uf ? cores.destaqueBorda : cores.borda,
                     },
@@ -463,12 +410,12 @@ export default function LoginScreen(props: any): React.ReactElement {
               style={[
                 styles.botaoFecharModal,
                 {
-                  backgroundColor: cores.input,
+                  backgroundColor: cores.fundoCampo,
                   borderColor: cores.borda,
                 },
               ]}
-              underlayColor={cores.card}
-              onPress={() => setModalEstadosVisivel(false)}
+              underlayColor={cores.destaque}
+              onPress={() => setModalEstadoVisivel(false)}
             >
               <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
                 Fechar
@@ -486,30 +433,34 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingLeft: 24,
     paddingRight: 24,
-    paddingTop: 34,
+    paddingTop: 88,
     paddingBottom: 32,
     justifyContent: 'center',
   },
-  areaTema: {
+  botaoTema: {
     position: 'absolute',
-    top: 18,
-    left: 18,
-    flexDirection: 'row',
+    top: 50,
+    left: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  textoTema: {
-    fontSize: 12,
-    marginRight: 8,
+  iconeTema: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   areaLogo: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 28,
   },
   logo: {
-    width: 120,
-    height: 90,
+    width: 124,
+    height: 92,
     resizeMode: 'contain',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   nomeApp: {
     fontSize: 32,
@@ -526,27 +477,23 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 12,
   },
-  selectTipo: {
+  linhaTipos: {
     width: '100%',
-    height: 52,
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  botaoTipo: {
+    flex: 1,
+    height: 46,
     borderWidth: 1,
     borderRadius: 14,
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  selectConteudo: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingLeft: 16,
-    paddingRight: 16,
+    justifyContent: 'center',
+    marginRight: 8,
   },
-  selectTexto: {
+  textoBotaoTipo: {
+    fontWeight: 'bold',
     fontSize: 15,
-    fontWeight: '600',
-  },
-  selectSeta: {
-    fontSize: 12,
   },
   input: {
     width: '100%',
@@ -557,7 +504,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     marginBottom: 8,
   },
-  linhaDocumento: {
+  linhaCrmv: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -591,7 +538,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 22,
-    marginBottom: 22,
+    marginBottom: 18,
   },
   textoBotaoEntrar: {
     color: '#FFFFFF',
@@ -628,15 +575,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
   },
-  modalCard: {
+  modalCardEstados: {
     width: '90%',
     maxHeight: '70%',
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 16,
-  },
-  modalCardPequeno: {
-    width: '88%',
     borderRadius: 16,
     borderWidth: 1,
     padding: 16,
