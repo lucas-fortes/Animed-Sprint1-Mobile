@@ -303,13 +303,16 @@ export default function LoginScreen(props: any): React.ReactElement {
                 color: cores.texto,
               },
             ]}
-            placeholder="000.000.000-00"
+            placeholder={tipoAcesso === 'CPF' ? '000.000.000-00' : 'Número do CRMV'}
             placeholderTextColor={cores.textoSecundario}
             value={documento}
             onChangeText={alterarDocumento}
-            keyboardType="numeric"
+            keyboardType="visible-password"
+            showSoftInputOnFocus={true}
             secureTextEntry={true}
-            maxLength={14}
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
           />
         ) : (
           <View style={styles.linhaCrmv}>
@@ -326,10 +329,12 @@ export default function LoginScreen(props: any): React.ReactElement {
               placeholderTextColor={cores.textoSecundario}
               value={documento}
               onChangeText={alterarDocumento}
-              keyboardType="numeric"
-              secureTextEntry={true}
-              maxLength={8}
+              keyboardType="visible-password"
               showSoftInputOnFocus={true}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
             />
 
             <TouchableHighlight
