@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import LoginScreen from './src/screen/LoginScreen';
 import DashboardScreen from './src/screen/DashboardScreen';
 import RegistroClinicoScreen from './src/screen/RegistroClinicoScreen';
 import HistoricoClinicoScreen from './src/screen/HistoricoClinicoScreen';
@@ -11,7 +12,7 @@ import PerfilScreen from './src/screen/PerfilScreen';
 
 const Tab = createBottomTabNavigator();
 
-export default function App(): React.ReactElement {
+function AppTabs(): React.ReactElement {
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -27,7 +28,7 @@ export default function App(): React.ReactElement {
           name="Início"
           component={DashboardScreen}
           options={{
-            tabBarIcon: ({ focused }) => (
+            tabBarIcon: ({ focused }: any) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
                 <Text style={styles.tabIcon}>⌂</Text>
               </View>
@@ -39,7 +40,7 @@ export default function App(): React.ReactElement {
           name="Registro"
           component={RegistroClinicoScreen}
           options={{
-            tabBarIcon: ({ focused }) => (
+            tabBarIcon: ({ focused }: any) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
                 <Text style={styles.tabIcon}>＋</Text>
               </View>
@@ -51,7 +52,7 @@ export default function App(): React.ReactElement {
           name="Histórico"
           component={HistoricoClinicoScreen}
           options={{
-            tabBarIcon: ({ focused }) => (
+            tabBarIcon: ({ focused }: any) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
                 <Text style={styles.tabIcon}>▤</Text>
               </View>
@@ -63,7 +64,7 @@ export default function App(): React.ReactElement {
           name="Perfil"
           component={PerfilScreen}
           options={{
-            tabBarIcon: ({ focused }) => (
+            tabBarIcon: ({ focused }: any) => (
               <View style={focused ? styles.activeBar : styles.inactiveBar}>
                 <Text style={styles.tabIcon}>●</Text>
               </View>
@@ -73,6 +74,16 @@ export default function App(): React.ReactElement {
       </Tab.Navigator>
     </NavigationContainer>
   );
+}
+
+export default function App(): React.ReactElement {
+  const [logado, setLogado] = useState<boolean>(false);
+
+  if (logado === false) {
+    return <LoginScreen onLogin={() => setLogado(true)} />;
+  }
+
+  return <AppTabs />;
 }
 
 const styles = StyleSheet.create({
