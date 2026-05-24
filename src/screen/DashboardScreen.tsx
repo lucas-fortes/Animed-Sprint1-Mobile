@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+
 import {
   Alert,
   Image,
   Modal,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TouchableHighlight,
   TouchableWithoutFeedback,
@@ -66,41 +68,38 @@ const ATENDIMENTOS_DIA: Atendimento[] = [
 export default function DashboardScreen(): React.ReactElement {
   const [modalMenuVisivel, setModalMenuVisivel] = useState<boolean>(false);
   const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
-  const [atendimentosDia, setAtendimentosDia] =
-    useState<Atendimento[]>(ATENDIMENTOS_DIA);
+  const [atendimentosDia] = useState<Atendimento[]>(ATENDIMENTOS_DIA);
 
   const totalAtendimentosHoje = atendimentosDia.length;
   const totalOcorrenciasMes = atendimentosDia.length;
-  const cores = temaEscuro
 
+  const cores = temaEscuro
     ? {
-      fundo: '#07111F',
-      card: '#172232',
-      cardSecundario: '#171A22',
-      borda: '#23415A',
-      texto: '#FFFFFF',
-      textoSecundario: '#8A96A8',
-      destaque: '#008B7A',
-      destaqueClaro: '#00C2A8',
-      perigo: '#D62828',
-      alerta: '#D99000',
-      baixo: '#00A693',
-      overlay: 'rgba(0, 0, 0, 0.60)',
-    }
+        fundo: '#07111F',
+        card: '#172232',
+        cardSecundario: '#171A22',
+        borda: '#23415A',
+        texto: '#FFFFFF',
+        textoSecundario: '#8A96A8',
+        destaque: '#008B7A',
+        destaqueClaro: '#00C2A8',
+        perigo: '#D62828',
+        alerta: '#D99000',
+        baixo: '#00A693',
+      }
     : {
-      fundo: '#F2F6FA',
-      card: '#FFFFFF',
-      cardSecundario: '#EAF2F7',
-      borda: '#B8C6D6',
-      texto: '#102033',
-      textoSecundario: '#6B7A8C',
-      destaque: '#008B7A',
-      destaqueClaro: '#00A693',
-      perigo: '#C62828',
-      alerta: '#B87500',
-      baixo: '#008B7A',
-      overlay: 'rgba(0, 0, 0, 0.35)',
-    };
+        fundo: '#F2F6FA',
+        card: '#FFFFFF',
+        cardSecundario: '#EAF2F7',
+        borda: '#B8C6D6',
+        texto: '#102033',
+        textoSecundario: '#6B7A8C',
+        destaque: '#008B7A',
+        destaqueClaro: '#00A693',
+        perigo: '#C62828',
+        alerta: '#B87500',
+        baixo: '#008B7A',
+      };
 
   function alternarTema(): void {
     setTemaEscuro(!temaEscuro);
@@ -114,51 +113,60 @@ export default function DashboardScreen(): React.ReactElement {
     setModalMenuVisivel(false);
   }
 
-  function abrirConfiguracoes(): void {
+  function acessarInicio(): void {
+    fecharMenu();
+  }
+
+  function acessarPerfil(): void {
+    fecharMenu();
+
+    Alert.alert('Perfil', 'Use a aba Perfil no menu inferior.');
+  }
+
+  function acessarHistorico(): void {
+    fecharMenu();
+
+    Alert.alert('Histórico', 'Use a aba Histórico no menu inferior.');
+  }
+
+  function acessarConfiguracoes(): void {
     fecharMenu();
 
     Alert.alert(
       'Configurações',
-      'A tela de configurações será conectada posteriormente.'
+      'Tela de configurações será implementada depois.'
     );
   }
 
-  function abrirRelatorios(): void {
+  function sairSistema(): void {
     fecharMenu();
 
     Alert.alert(
-      'Relatórios',
-      'A área de relatórios será implementada posteriormente.'
-    );
-  }
-
-  function abrirPerfil(): void {
-    fecharMenu();
-
-    Alert.alert(
-      'Perfil',
-      'Use a aba Perfil no menu inferior para acessar os dados do veterinário.'
+      'Sair',
+      'A função de logout será implementada com autenticação.'
     );
   }
 
   function verTodosAtendimentos(): void {
-  Alert.alert(
-    'Agenda do Dia',
-    'Existem ' + totalAtendimentosHoje + ' atendimentos cadastrados para hoje.'
-  );
-}
+    Alert.alert(
+      'Agenda do Dia',
+      'Existem ' +
+        totalAtendimentosHoje +
+        ' atendimentos cadastrados para hoje.'
+    );
+  }
 
   function visualizarAtendimento(atendimento: Atendimento): void {
     Alert.alert(
       atendimento.animal,
       'Horário: ' +
-      atendimento.horario +
-      '\nMotivo: ' +
-      atendimento.motivo +
-      '\nTutor: ' +
-      atendimento.tutor +
-      '\nUrgência: ' +
-      atendimento.urgencia
+        atendimento.horario +
+        '\nMotivo: ' +
+        atendimento.motivo +
+        '\nTutor: ' +
+        atendimento.tutor +
+        '\nUrgência: ' +
+        atendimento.urgencia
     );
   }
 
@@ -228,7 +236,7 @@ export default function DashboardScreen(): React.ReactElement {
           style={styles.logo}
         />
 
-        <View>
+        <View style={styles.areaTextoTitulo}>
           <Text style={[styles.titulo, { color: cores.texto }]}>
             Dashboard
           </Text>
@@ -250,6 +258,7 @@ export default function DashboardScreen(): React.ReactElement {
           ]}
         >
           <Text style={styles.numeroResumo}>{totalAtendimentosHoje}</Text>
+
           <Text style={styles.textoResumo}>ATENDIMENTOS HOJE</Text>
         </View>
 
@@ -264,6 +273,10 @@ export default function DashboardScreen(): React.ReactElement {
         >
           <Text style={[styles.numeroResumo, { color: cores.texto }]}>
             {totalOcorrenciasMes}
+          </Text>
+
+          <Text style={[styles.textoResumo, { color: cores.texto }]}>
+            OCORRÊNCIAS NO MÊS
           </Text>
         </View>
       </View>
@@ -313,7 +326,12 @@ export default function DashboardScreen(): React.ReactElement {
                 },
               ]}
             >
-              <Text style={[styles.iconeHorario, { color: cores.textoSecundario }]}>
+              <Text
+                style={[
+                  styles.iconeHorario,
+                  { color: cores.textoSecundario },
+                ]}
+              >
                 ◷
               </Text>
 
@@ -365,102 +383,111 @@ export default function DashboardScreen(): React.ReactElement {
         onRequestClose={fecharMenu}
       >
         <TouchableWithoutFeedback onPress={fecharMenu}>
-          <View style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}>
+          <View style={styles.drawerOverlay}>
             <View
-              style={[
-                styles.menuLateral,
-                {
-                  backgroundColor: cores.card,
-                  borderColor: cores.borda,
-                },
-              ]}
+              style={styles.drawerContainer}
               onStartShouldSetResponder={() => true}
             >
-              <View style={styles.menuHeader}>
-                <Text style={[styles.menuTitulo, { color: cores.texto }]}>
-                  Menu
-                </Text>
+              <View style={styles.drawerHeader}>
+                <View style={styles.areaMarcaMenu}>
+                  <View style={styles.logoMenu}>
+                    <Text style={styles.textoLogoMenu}>VM</Text>
+                  </View>
+
+                  <Text style={styles.nomeMenu}>VetMobile</Text>
+                </View>
 
                 <TouchableHighlight
-                  style={[
-                    styles.botaoFechar,
-                    {
-                      backgroundColor: cores.cardSecundario,
-                      borderColor: cores.borda,
-                    },
-                  ]}
-                  underlayColor={cores.destaque}
+                  style={styles.botaoFecharMenu}
+                  underlayColor="#142638"
                   onPress={fecharMenu}
                 >
-                  <Text style={[styles.textoFechar, { color: cores.texto }]}>
-                    ×
-                  </Text>
+                  <Text style={styles.textoFecharMenu}>×</Text>
                 </TouchableHighlight>
               </View>
 
-              <TouchableHighlight
-                style={[
-                  styles.itemMenu,
-                  {
-                    backgroundColor: cores.cardSecundario,
-                    borderColor: cores.borda,
-                  },
-                ]}
-                underlayColor={cores.destaque}
-                onPress={alternarTema}
-              >
-                <Text style={[styles.textoItemMenu, { color: cores.texto }]}>
-                  {temaEscuro ? '☀ Tema claro' : '☾ Tema escuro'}
-                </Text>
-              </TouchableHighlight>
+              <View style={styles.drawerItens}>
+                <TouchableHighlight
+                  style={[styles.itemDrawer, styles.itemDrawerAtivo]}
+                  underlayColor="#12384A"
+                  onPress={acessarInicio}
+                >
+                  <View style={styles.conteudoItemDrawer}>
+                    <Text style={[styles.iconeDrawer, styles.textoAtivoDrawer]}>
+                      ⌂
+                    </Text>
 
-              <TouchableHighlight
-                style={[
-                  styles.itemMenu,
-                  {
-                    backgroundColor: cores.cardSecundario,
-                    borderColor: cores.borda,
-                  },
-                ]}
-                underlayColor={cores.destaque}
-                onPress={abrirConfiguracoes}
-              >
-                <Text style={[styles.textoItemMenu, { color: cores.texto }]}>
-                  ⚙ Configurações
-                </Text>
-              </TouchableHighlight>
+                    <Text style={[styles.textoDrawer, styles.textoAtivoDrawer]}>
+                      Início
+                    </Text>
+                  </View>
+                </TouchableHighlight>
 
-              <TouchableHighlight
-                style={[
-                  styles.itemMenu,
-                  {
-                    backgroundColor: cores.cardSecundario,
-                    borderColor: cores.borda,
-                  },
-                ]}
-                underlayColor={cores.destaque}
-                onPress={abrirRelatorios}
-              >
-                <Text style={[styles.textoItemMenu, { color: cores.texto }]}>
-                  📄 Relatórios
-                </Text>
-              </TouchableHighlight>
+                <TouchableHighlight
+                  style={styles.itemDrawer}
+                  underlayColor="#142638"
+                  onPress={acessarPerfil}
+                >
+                  <View style={styles.conteudoItemDrawer}>
+                    <Text style={styles.iconeDrawer}>♙</Text>
 
-              <TouchableHighlight
-                style={[
-                  styles.itemMenu,
-                  {
-                    backgroundColor: cores.cardSecundario,
-                    borderColor: cores.borda,
-                  },
-                ]}
-                underlayColor={cores.destaque}
-                onPress={abrirPerfil}
-              >
-                <Text style={[styles.textoItemMenu, { color: cores.texto }]}>
-                  👤 Perfil
-                </Text>
-              </TouchableHighlight>
+                    <Text style={styles.textoDrawer}>Perfil</Text>
+                  </View>
+                </TouchableHighlight>
+
+                <TouchableHighlight
+                  style={styles.itemDrawer}
+                  underlayColor="#142638"
+                  onPress={acessarHistorico}
+                >
+                  <View style={styles.conteudoItemDrawer}>
+                    <Text style={styles.iconeDrawer}>◷</Text>
+
+                    <Text style={styles.textoDrawer}>Histórico</Text>
+                  </View>
+                </TouchableHighlight>
+
+                <TouchableHighlight
+                  style={styles.itemDrawer}
+                  underlayColor="#142638"
+                  onPress={acessarConfiguracoes}
+                >
+                  <View style={styles.conteudoItemDrawer}>
+                    <Text style={styles.iconeDrawer}>⚙</Text>
+
+                    <Text style={styles.textoDrawer}>Configurações</Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
+
+              <View style={styles.drawerRodape}>
+                <View style={styles.linhaTemaMenu}>
+                  <View style={styles.conteudoItemDrawer}>
+                    <Text style={styles.iconeDrawer}>☼</Text>
+
+                    <Text style={styles.textoDrawer}>Tema Claro</Text>
+                  </View>
+
+                  <Switch
+                    value={!temaEscuro}
+                    onValueChange={() => alternarTema()}
+                    trackColor={{ false: '#31445F', true: '#008B7A' }}
+                    thumbColor="#FFFFFF"
+                  />
+                </View>
+
+                <TouchableHighlight
+                  style={styles.itemSair}
+                  underlayColor="#27151A"
+                  onPress={sairSistema}
+                >
+                  <View style={styles.conteudoItemDrawer}>
+                    <Text style={styles.iconeSair}>↪</Text>
+
+                    <Text style={styles.textoSair}>Sair</Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -510,6 +537,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 26,
+  },
+  areaTextoTitulo: {
+    flex: 1,
   },
   logo: {
     width: 64,
@@ -638,52 +668,129 @@ const styles = StyleSheet.create({
     fontSize: 34,
     fontWeight: 'bold',
   },
-  modalOverlay: {
+  drawerOverlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
   },
-  menuLateral: {
-    width: '74%',
+  drawerContainer: {
+    width: '62%',
     height: '100%',
+    backgroundColor: '#0B1526',
     borderRightWidth: 1,
-    paddingTop: 58,
-    paddingLeft: 18,
-    paddingRight: 18,
+    borderRightColor: '#1D3147',
   },
-  menuHeader: {
+  drawerHeader: {
+    height: 66,
+    paddingLeft: 20,
+    paddingRight: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 22,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1D3147',
   },
-  menuTitulo: {
-    fontSize: 24,
+  areaMarcaMenu: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logoMenu: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: '#008B7A',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  textoLogoMenu: {
+    color: '#FFFFFF',
+    fontSize: 13,
     fontWeight: 'bold',
   },
-  botaoFechar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
+  nomeMenu: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  botaoFecharMenu: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textoFechar: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    lineHeight: 24,
+  textoFecharMenu: {
+    color: '#8A96A8',
+    fontSize: 26,
+    lineHeight: 28,
   },
-  itemMenu: {
-    height: 52,
-    borderRadius: 14,
-    borderWidth: 1,
-    justifyContent: 'center',
+  drawerItens: {
+    paddingTop: 16,
     paddingLeft: 16,
-    marginBottom: 12,
+    paddingRight: 16,
   },
-  textoItemMenu: {
-    fontSize: 15,
+  itemDrawer: {
+    height: 42,
+    borderRadius: 10,
+    justifyContent: 'center',
+    paddingLeft: 12,
+    marginBottom: 6,
+  },
+  itemDrawerAtivo: {
+    backgroundColor: '#12384A',
+  },
+  conteudoItemDrawer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconeDrawer: {
+    width: 26,
+    color: '#CBD5E1',
+    fontSize: 17,
+    marginRight: 8,
+  },
+  textoDrawer: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  textoAtivoDrawer: {
+    color: '#00C2A8',
+    fontWeight: 'bold',
+  },
+  drawerRodape: {
+    marginTop: 'auto',
+    paddingTop: 14,
+    paddingBottom: 22,
+    paddingLeft: 18,
+    paddingRight: 18,
+    borderTopWidth: 1,
+    borderTopColor: '#1D3147',
+  },
+  linhaTemaMenu: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  itemSair: {
+    height: 42,
+    borderRadius: 10,
+    justifyContent: 'center',
+    paddingLeft: 8,
+  },
+  iconeSair: {
+    width: 26,
+    color: '#FF5A6A',
+    fontSize: 18,
+    marginRight: 8,
+  },
+  textoSair: {
+    color: '#FF5A6A',
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
