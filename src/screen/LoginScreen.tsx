@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -172,15 +173,20 @@ export default function LoginScreen(props: any): React.ReactElement {
 
   return (
     <KeyboardAvoidingView
-      style={styles.keyboardContainer}
-      behavior="height"
+      style={[
+        styles.keyboardContainer,
+        { backgroundColor: cores.fundo },
+      ]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
+        style={{ backgroundColor: cores.fundo }}
         contentContainerStyle={[
           styles.container,
           { backgroundColor: cores.fundo },
         ]}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
       >
         <TouchableHighlight
           style={[
@@ -475,7 +481,7 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingRight: 24,
     paddingTop: 88,
-    paddingBottom: 120,
+    paddingBottom: 140,
     justifyContent: 'center',
   },
   botaoTema: {

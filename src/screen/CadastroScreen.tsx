@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,21 +20,14 @@ const ESTADOS_BRASIL: string[] = [
   'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
 ];
 
-export default function CadastroScreen(props: any): React.ReactElement {
+export default function LoginScreen(props: any): React.ReactElement {
   const [tipoAcesso, setTipoAcesso] = useState<string>('CPF');
   const [documento, setDocumento] = useState<string>('');
   const [ufCrmv, setUfCrmv] = useState<string>('SP');
-
-  const [emailUsuario, setEmailUsuario] = useState<string>('');
-  const [emailDominio, setEmailDominio] = useState<string>('');
-  const [emailSufixo, setEmailSufixo] = useState<string>('.com');
-
   const [senha, setSenha] = useState<string>('');
-  const [confirmarSenha, setConfirmarSenha] = useState<string>('');
 
   const [temaEscuro, setTemaEscuro] = useState<boolean>(true);
   const [modalEstadoVisivel, setModalEstadoVisivel] = useState<boolean>(false);
-  const [modalSufixoVisivel, setModalSufixoVisivel] = useState<boolean>(false);
 
   const cores = temaEscuro
     ? {
@@ -116,36 +110,6 @@ export default function CadastroScreen(props: any): React.ReactElement {
     }
   }
 
-  function alterarEmailUsuario(valor: string): void {
-    const possuiCaracterInvalido = /[^a-zA-Z0-9._-]/.test(valor);
-
-    if (possuiCaracterInvalido) {
-      Alert.alert(
-        'Atenção',
-        'Digite somente letras, números, ponto, hífen ou underline antes do @.'
-      );
-    }
-
-    const textoLimpo = valor.replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 40);
-
-    setEmailUsuario(textoLimpo);
-  }
-
-  function alterarEmailDominio(valor: string): void {
-    const possuiCaracterInvalido = /[^a-zA-Z0-9-]/.test(valor);
-
-    if (possuiCaracterInvalido) {
-      Alert.alert(
-        'Atenção',
-        'Digite somente letras, números ou hífen no domínio do e-mail.'
-      );
-    }
-
-    const textoLimpo = valor.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 30);
-
-    setEmailDominio(textoLimpo);
-  }
-
   function alterarTipoAcesso(tipo: string): void {
     setTipoAcesso(tipo);
     setDocumento('');
@@ -156,16 +120,11 @@ export default function CadastroScreen(props: any): React.ReactElement {
     setModalEstadoVisivel(false);
   }
 
-  function selecionarSufixoEmail(sufixo: string): void {
-    setEmailSufixo(sufixo);
-    setModalSufixoVisivel(false);
-  }
-
   function alternarTema(): void {
     setTemaEscuro(!temaEscuro);
   }
 
-  function validarCadastro(): boolean {
+  function validarLogin(): boolean {
     const documentoNumerico = documento.replace(/\D/g, '');
 
     if (documento.trim() === '') {
@@ -183,89 +142,51 @@ export default function CadastroScreen(props: any): React.ReactElement {
       return false;
     }
 
-    if (emailUsuario.trim() === '') {
-      Alert.alert('Atenção', 'Informe a primeira parte do e-mail.');
-      return false;
-    }
-
-    if (emailUsuario.trim().length < 3) {
-      Alert.alert(
-        'Atenção',
-        'O e-mail deve ter pelo menos 3 caracteres antes do @.'
-      );
-      return false;
-    }
-
-    if (emailDominio.trim() === '') {
-      Alert.alert('Atenção', 'Informe o domínio do e-mail.');
-      return false;
-    }
-
-    if (emailDominio.trim().length < 5) {
-      Alert.alert(
-        'Atenção',
-        'O domínio do e-mail deve ter pelo menos 5 caracteres depois do @.'
-      );
-      return false;
-    }
-
     if (senha.trim() === '') {
       Alert.alert('Atenção', 'Informe sua senha.');
-      return false;
-    }
-
-    if (senha.length < 6) {
-      Alert.alert('Atenção', 'A senha deve ter pelo menos 6 caracteres.');
-      return false;
-    }
-
-    if (confirmarSenha.trim() === '') {
-      Alert.alert('Atenção', 'Confirme sua senha.');
-      return false;
-    }
-
-    if (senha !== confirmarSenha) {
-      Alert.alert('Atenção', 'As senhas informadas não são iguais.');
       return false;
     }
 
     return true;
   }
 
-  function criarConta(): void {
-    if (validarCadastro() === false) {
+  function entrar(): void {
+    if (validarLogin() === false) {
       return;
     }
 
-    const emailCompleto = emailUsuario + '@' + emailDominio + emailSufixo;
-
-    Alert.alert(
-      'Cadastro',
-      'Conta criada em modo demonstrativo para ' + emailCompleto + '.',
-      [
-        {
-          text: 'OK',
-          onPress: () => props.onVoltarLogin(),
-        },
-      ]
-    );
+    Alert.alert('Login', 'Login realizado em modo demonstrativo.', [
+      {
+        text: 'OK',
+        onPress: () => props.onLogin(),
+      },
+    ]);
   }
 
-  function voltarLogin(): void {
-    props.onVoltarLogin();
+  function abrirCadastro(): void {
+    props.onCadastro();
+  }
+
+  function abrirRecuperarSenha(): void {
+    props.onRecuperarSenha();
   }
 
   return (
     <KeyboardAvoidingView
-      style={styles.keyboardContainer}
-      behavior="height"
+      style={[
+        styles.keyboardContainer,
+        { backgroundColor: cores.fundo },
+      ]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
+        style={{ backgroundColor: cores.fundo }}
         contentContainerStyle={[
           styles.container,
           { backgroundColor: cores.fundo },
         ]}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
       >
         <TouchableHighlight
           style={[
@@ -295,16 +216,16 @@ export default function CadastroScreen(props: any): React.ReactElement {
           />
 
           <Text style={[styles.nomeApp, { color: cores.texto }]}>
-            Cadastre-se
+            Animed
           </Text>
 
           <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
-            Crie sua conta profissional
+            Acesse sua conta para continuar
           </Text>
         </View>
 
         <Text style={[styles.label, { color: cores.texto }]}>
-          Tipo de cadastro
+          Tipo de acesso
         </Text>
 
         <View style={styles.linhaTipos}>
@@ -421,64 +342,6 @@ export default function CadastroScreen(props: any): React.ReactElement {
           </View>
         )}
 
-        <Text style={[styles.label, { color: cores.texto }]}>E-mail</Text>
-
-        <View style={styles.linhaEmail}>
-          <TextInput
-            style={[
-              styles.inputEmailUsuario,
-              {
-                backgroundColor: cores.fundoCampo,
-                borderColor: cores.borda,
-                color: cores.texto,
-              },
-            ]}
-            placeholder="usuario"
-            placeholderTextColor={cores.textoSecundario}
-            value={emailUsuario}
-            onChangeText={alterarEmailUsuario}
-            autoCapitalize="none"
-            autoCorrect={false}
-            spellCheck={false}
-          />
-
-          <Text style={[styles.arrobaEmail, { color: cores.texto }]}>@</Text>
-
-          <TextInput
-            style={[
-              styles.inputEmailDominio,
-              {
-                backgroundColor: cores.fundoCampo,
-                borderColor: cores.borda,
-                color: cores.texto,
-              },
-            ]}
-            placeholder="dominio"
-            placeholderTextColor={cores.textoSecundario}
-            value={emailDominio}
-            onChangeText={alterarEmailDominio}
-            autoCapitalize="none"
-            autoCorrect={false}
-            spellCheck={false}
-          />
-
-          <TouchableHighlight
-            style={[
-              styles.botaoSufixoEmail,
-              {
-                backgroundColor: cores.fundoCampo,
-                borderColor: cores.borda,
-              },
-            ]}
-            underlayColor={cores.destaque}
-            onPress={() => setModalSufixoVisivel(true)}
-          >
-            <Text style={[styles.textoSufixoEmail, { color: cores.texto }]}>
-              {emailSufixo} ▼
-            </Text>
-          </TouchableHighlight>
-        </View>
-
         <Text style={[styles.label, { color: cores.texto }]}>Senha</Text>
 
         <TextInput
@@ -490,155 +353,46 @@ export default function CadastroScreen(props: any): React.ReactElement {
               color: cores.texto,
             },
           ]}
-          placeholder="Crie sua senha"
+          placeholder="Digite sua senha"
           placeholderTextColor={cores.textoSecundario}
           value={senha}
           onChangeText={setSenha}
           secureTextEntry={true}
         />
 
-        <Text style={[styles.label, { color: cores.texto }]}>
-          Confirmar senha
-        </Text>
-
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: cores.fundoCampo,
-              borderColor: cores.borda,
-              color: cores.texto,
-            },
-          ]}
-          placeholder="Confirme sua senha"
-          placeholderTextColor={cores.textoSecundario}
-          value={confirmarSenha}
-          onChangeText={setConfirmarSenha}
-          secureTextEntry={true}
-        />
-
         <TouchableHighlight
-          style={[styles.botaoPrincipal, { backgroundColor: cores.destaque }]}
+          style={[styles.botaoEntrar, { backgroundColor: cores.destaque }]}
           underlayColor="#006F62"
-          onPress={criarConta}
+          onPress={entrar}
         >
-          <Text style={styles.textoBotaoPrincipal}>Criar Conta</Text>
+          <Text style={styles.textoBotaoEntrar}>Entrar no Sistema</Text>
         </TouchableHighlight>
 
-        <View style={styles.areaLogin}>
+        <TouchableHighlight
+          style={styles.botaoLink}
+          underlayColor="transparent"
+          onPress={abrirRecuperarSenha}
+        >
+          <Text style={[styles.textoLink, { color: cores.link }]}>
+            Esqueceu a senha?
+          </Text>
+        </TouchableHighlight>
+
+        <View style={styles.areaCadastro}>
           <Text style={[styles.textoConta, { color: cores.textoSecundario }]}>
-            Já possui conta?
+            Não tem uma conta?
           </Text>
 
           <TouchableHighlight
-            style={styles.botaoLinkPequeno}
+            style={styles.botaoCadastro}
             underlayColor="transparent"
-            onPress={voltarLogin}
+            onPress={abrirCadastro}
           >
-            <Text style={[styles.textoLogin, { color: cores.destaque }]}>
-              Fazer login
+            <Text style={[styles.textoCadastro, { color: cores.destaque }]}>
+              Cadastre-se
             </Text>
           </TouchableHighlight>
         </View>
-
-        <Modal
-          visible={modalSufixoVisivel}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setModalSufixoVisivel(false)}
-        >
-          <TouchableWithoutFeedback onPress={() => setModalSufixoVisivel(false)}>
-            <View
-              style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}
-            >
-              <View
-                style={[
-                  styles.modalCardSufixo,
-                  {
-                    backgroundColor: cores.fundoModal,
-                    borderColor: cores.borda,
-                  },
-                ]}
-                onStartShouldSetResponder={() => true}
-              >
-                <View style={styles.modalHeader}>
-                  <Text style={[styles.modalTitulo, { color: cores.texto }]}>
-                    Final do e-mail
-                  </Text>
-
-                  <TouchableHighlight
-                    style={[
-                      styles.botaoFecharX,
-                      {
-                        backgroundColor: cores.fundoCampo,
-                        borderColor: cores.borda,
-                      },
-                    ]}
-                    underlayColor={cores.destaque}
-                    onPress={() => setModalSufixoVisivel(false)}
-                  >
-                    <Text style={[styles.textoFecharX, { color: cores.texto }]}>
-                      ×
-                    </Text>
-                  </TouchableHighlight>
-                </View>
-
-                <TouchableHighlight
-                  style={[
-                    styles.itemModal,
-                    {
-                      backgroundColor:
-                        emailSufixo === '.com' ? cores.destaque : cores.fundoCampo,
-                      borderColor:
-                        emailSufixo === '.com' ? cores.destaqueBorda : cores.borda,
-                    },
-                  ]}
-                  underlayColor={cores.destaque}
-                  onPress={() => selecionarSufixoEmail('.com')}
-                >
-                  <Text
-                    style={[
-                      styles.textoItemModal,
-                      { color: emailSufixo === '.com' ? '#FFFFFF' : cores.texto },
-                    ]}
-                  >
-                    .com
-                  </Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                  style={[
-                    styles.itemModal,
-                    {
-                      backgroundColor:
-                        emailSufixo === '.com.br'
-                          ? cores.destaque
-                          : cores.fundoCampo,
-                      borderColor:
-                        emailSufixo === '.com.br'
-                          ? cores.destaqueBorda
-                          : cores.borda,
-                    },
-                  ]}
-                  underlayColor={cores.destaque}
-                  onPress={() => selecionarSufixoEmail('.com.br')}
-                >
-                  <Text
-                    style={[
-                      styles.textoItemModal,
-                      {
-                        color:
-                          emailSufixo === '.com.br' ? '#FFFFFF' : cores.texto,
-                      },
-                    ]}
-                  >
-                    .com.br
-                  </Text>
-                </TouchableHighlight>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
 
         <Modal
           visible={modalEstadoVisivel}
@@ -727,7 +481,7 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingRight: 24,
     paddingTop: 88,
-    paddingBottom: 120,
+    paddingBottom: 140,
     justifyContent: 'center',
   },
   botaoTema: {
@@ -756,13 +510,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   nomeApp: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
   subtitulo: {
     fontSize: 14,
-    marginTop: 8,
+    marginTop: 6,
     textAlign: 'center',
   },
   label: {
@@ -826,48 +579,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  linhaEmail: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  inputEmailUsuario: {
-    flex: 1,
-    height: 52,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingLeft: 12,
-    paddingRight: 12,
-  },
-  arrobaEmail: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 6,
-    marginRight: 6,
-  },
-  inputEmailDominio: {
-    flex: 1,
-    height: 52,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingLeft: 12,
-    paddingRight: 12,
-  },
-  botaoSufixoEmail: {
-    width: 92,
-    height: 52,
-    borderWidth: 1,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 8,
-  },
-  textoSufixoEmail: {
-    fontWeight: 'bold',
-    fontSize: 13,
-  },
-  botaoPrincipal: {
+  botaoEntrar: {
     width: '100%',
     height: 54,
     borderRadius: 16,
@@ -876,25 +588,32 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 18,
   },
-  textoBotaoPrincipal: {
+  textoBotaoEntrar: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  areaLogin: {
+  botaoLink: {
+    padding: 8,
+    alignSelf: 'center',
+  },
+  textoLink: {
+    fontSize: 14,
+  },
+  areaCadastro: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 18,
   },
   textoConta: {
     fontSize: 14,
     marginRight: 4,
   },
-  botaoLinkPequeno: {
+  botaoCadastro: {
     padding: 4,
   },
-  textoLogin: {
+  textoCadastro: {
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -903,12 +622,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
-  },
-  modalCardSufixo: {
-    width: '85%',
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 16,
   },
   modalCardEstados: {
     width: '90%',
