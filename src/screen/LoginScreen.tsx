@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
@@ -27,29 +28,29 @@ export default function LoginScreen(props: any): React.ReactElement {
 
   const cores = temaEscuro
     ? {
-      fundo: '#07111F',
-      fundoCampo: '#171A22',
-      fundoModal: '#111820',
-      borda: '#23415A',
-      texto: '#FFFFFF',
-      textoSecundario: '#8A96A8',
-      destaque: '#008B7A',
-      destaqueBorda: '#00C2A8',
-      link: '#00C2FF',
-      overlay: 'rgba(0, 0, 0, 0.60)',
-    }
+        fundo: '#07111F',
+        fundoCampo: '#171A22',
+        fundoModal: '#111820',
+        borda: '#23415A',
+        texto: '#FFFFFF',
+        textoSecundario: '#8A96A8',
+        destaque: '#008B7A',
+        destaqueBorda: '#00C2A8',
+        link: '#00C2FF',
+        overlay: 'rgba(0, 0, 0, 0.60)',
+      }
     : {
-      fundo: '#F2F6FA',
-      fundoCampo: '#FFFFFF',
-      fundoModal: '#FFFFFF',
-      borda: '#B8C6D6',
-      texto: '#102033',
-      textoSecundario: '#6B7A8C',
-      destaque: '#008B7A',
-      destaqueBorda: '#00A693',
-      link: '#0077CC',
-      overlay: 'rgba(0, 0, 0, 0.35)',
-    };
+        fundo: '#F2F6FA',
+        fundoCampo: '#FFFFFF',
+        fundoModal: '#FFFFFF',
+        borda: '#B8C6D6',
+        texto: '#102033',
+        textoSecundario: '#6B7A8C',
+        destaque: '#008B7A',
+        destaqueBorda: '#00A693',
+        link: '#0077CC',
+        overlay: 'rgba(0, 0, 0, 0.35)',
+      };
 
   function formatarCpf(valor: string): string {
     const numeros = valor.replace(/\D/g, '').slice(0, 11);
@@ -207,9 +208,9 @@ export default function LoginScreen(props: any): React.ReactElement {
             },
             tipoAcesso === 'CPF'
               ? {
-                backgroundColor: cores.destaque,
-                borderColor: cores.destaqueBorda,
-              }
+                  backgroundColor: cores.destaque,
+                  borderColor: cores.destaqueBorda,
+                }
               : null,
           ]}
           underlayColor={cores.destaque}
@@ -234,9 +235,9 @@ export default function LoginScreen(props: any): React.ReactElement {
             },
             tipoAcesso === 'CRMV'
               ? {
-                backgroundColor: cores.destaque,
-                borderColor: cores.destaqueBorda,
-              }
+                  backgroundColor: cores.destaque,
+                  borderColor: cores.destaqueBorda,
+                }
               : null,
           ]}
           underlayColor={cores.destaque}
@@ -363,66 +364,78 @@ export default function LoginScreen(props: any): React.ReactElement {
         </TouchableHighlight>
       </View>
 
-      <Modal visible={modalEstadoVisivel} transparent={true} animationType="fade">
-        <View style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}>
+      <Modal
+        visible={modalEstadoVisivel}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setModalEstadoVisivel(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalEstadoVisivel(false)}>
           <View
-            style={[
-              styles.modalCardEstados,
-              {
-                backgroundColor: cores.fundoModal,
-                borderColor: cores.borda,
-              },
-            ]}
+            style={[styles.modalOverlay, { backgroundColor: cores.overlay }]}
           >
-            <Text style={[styles.modalTitulo, { color: cores.texto }]}>
-              Selecione o Estado
-            </Text>
-
-            <ScrollView style={styles.listaEstados}>
-              {ESTADOS_BRASIL.map((uf) => (
-                <TouchableHighlight
-                  key={uf}
-                  style={[
-                    styles.itemModal,
-                    {
-                      backgroundColor:
-                        ufCrmv === uf ? cores.destaque : cores.fundoCampo,
-                      borderColor:
-                        ufCrmv === uf ? cores.destaqueBorda : cores.borda,
-                    },
-                  ]}
-                  underlayColor={cores.destaque}
-                  onPress={() => selecionarEstado(uf)}
-                >
-                  <Text
-                    style={[
-                      styles.textoItemModal,
-                      { color: ufCrmv === uf ? '#FFFFFF' : cores.texto },
-                    ]}
-                  >
-                    {uf}
-                  </Text>
-                </TouchableHighlight>
-              ))}
-            </ScrollView>
-
-            <TouchableHighlight
+            <View
               style={[
-                styles.botaoFecharModal,
+                styles.modalCardEstados,
                 {
-                  backgroundColor: cores.fundoCampo,
+                  backgroundColor: cores.fundoModal,
                   borderColor: cores.borda,
                 },
               ]}
-              underlayColor={cores.destaque}
-              onPress={() => setModalEstadoVisivel(false)}
+              onStartShouldSetResponder={() => true}
             >
-              <Text style={[styles.textoFecharModal, { color: cores.texto }]}>
-                Fechar
-              </Text>
-            </TouchableHighlight>
+              <View style={styles.modalHeader}>
+                <Text style={[styles.modalTitulo, { color: cores.texto }]}>
+                  Selecione o Estado
+                </Text>
+
+                <TouchableHighlight
+                  style={[
+                    styles.botaoFecharX,
+                    {
+                      backgroundColor: cores.fundoCampo,
+                      borderColor: cores.borda,
+                    },
+                  ]}
+                  underlayColor={cores.destaque}
+                  onPress={() => setModalEstadoVisivel(false)}
+                >
+                  <Text style={[styles.textoFecharX, { color: cores.texto }]}>
+                    ×
+                  </Text>
+                </TouchableHighlight>
+              </View>
+
+              <ScrollView style={styles.listaEstados}>
+                {ESTADOS_BRASIL.map((uf) => (
+                  <TouchableHighlight
+                    key={uf}
+                    style={[
+                      styles.itemModal,
+                      {
+                        backgroundColor:
+                          ufCrmv === uf ? cores.destaque : cores.fundoCampo,
+                        borderColor:
+                          ufCrmv === uf ? cores.destaqueBorda : cores.borda,
+                      },
+                    ]}
+                    underlayColor={cores.destaque}
+                    onPress={() => selecionarEstado(uf)}
+                  >
+                    <Text
+                      style={[
+                        styles.textoItemModal,
+                        { color: ufCrmv === uf ? '#FFFFFF' : cores.texto },
+                      ]}
+                    >
+                      {uf}
+                    </Text>
+                  </TouchableHighlight>
+                ))}
+              </ScrollView>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </ScrollView>
   );
@@ -582,11 +595,30 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 16,
   },
+  modalHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
   modalTitulo: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 14,
     textAlign: 'center',
+  },
+  botaoFecharX: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textoFecharX: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    lineHeight: 24,
   },
   listaEstados: {
     marginBottom: 12,
@@ -602,16 +634,5 @@ const styles = StyleSheet.create({
   textoItemModal: {
     fontWeight: 'bold',
     fontSize: 14,
-  },
-  botaoFecharModal: {
-    height: 46,
-    borderWidth: 1,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  textoFecharModal: {
-    fontWeight: 'bold',
   },
 });
